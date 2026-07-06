@@ -44,6 +44,22 @@ Throughput = `GET /products`, 50 connections, 8 s, after warmup. RSS =
 The two Ligero rows share byte-for-byte the same `App.java`; only the
 `runtimeOnly` server dependency differs.
 
+### Verdict — which should you pick?
+
+There is no single winner; it depends on what you optimize for.
+
+| If you want… | Pick | Why |
+|---|---|---|
+| **Best balance** (throughput + footprint + features) | **Ligero on the Jetty engine** | ~Javalin throughput, the smallest deps of the fast options, plus DI, modules, devtools, OpenAPI, auth — batteries a micro-framework doesn't ship |
+| **Fastest startup & smallest footprint** | **Ligero on the JDK engine** | 0.4 s cold start, 3 MB of libs, zero server deps — ideal for internal APIs, serverless, low-to-medium traffic |
+| **Maximum raw throughput, minimal surface** | **Javalin** | highest req/s here; Ligero-on-Jetty is within run-to-run variance |
+| **The biggest ecosystem & maturity** | **Spring Boot** | not what this benchmark measures — it's the slowest to start (2.1 s) and the heaviest (20 MB) — but its ecosystem is unmatched |
+
+In one line: **Ligero gives you a micro-framework's startup and footprint,
+and — with a one-line engine swap — Javalin-class throughput, while bringing
+DI, modules and devtools that the micro-frameworks don't.** Spring Boot
+remains the pick when the ecosystem outweighs startup, memory and size.
+
 ## Dependency-injection comparison
 
 Wiring cost of a 100-bean dependency graph (fresh JVMs, median of 5),

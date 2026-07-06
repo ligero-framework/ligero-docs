@@ -8,32 +8,37 @@ sidebar_position: 3
 ready-to-run projects — including Docker packaging and an optional database.
 
 ```bash
-ligero new my-api --package com.acme.api            # plain API
+ligero new my-api --package com.acme.api            # modular app
 ligero new my-api --db postgres                     # + PostgreSQL via Docker Compose
-ligero new my-api --db h2                           # + in-memory H2 (nothing to install)
-ligero generate controller User                     # CRUD controller with validation
+ligero new my-api --db h2                            # + in-memory H2 (nothing to install)
+ligero generate resource Order                       # a whole CRUD slice (module + layers), wired
 ```
 
 ## What `new` generates
 
-A **layered** application, wired with the
-[`Beans` container](../guides/dependency-injection.md) and ready to debug
-visually with [devtools](../guides/devtools.md):
+A **modular, layered** application (see the
+[architecture guide](../guides/architecture.md)): `Application` lists
+modules, and a `GreetingModule` owns the greeting slice — its beans and
+routes — wired with the [`Beans` container](../guides/dependency-injection.md)
+and ready to debug with [devtools](../guides/devtools.md).
 
 ```
-Application.java                        composition root: Beans wiring + devtools
-greeting/GreetingController.java        @Controller  — routes -> service
-greeting/GreetingService.java           interface    — business layer
-greeting/DefaultGreetingService.java    @Service
-greeting/GreetingRepository.java        interface    — data-access layer
+Application.java                          lists modules — no wiring here
+greeting/GreetingModule.java              this slice's beans + routes (with anchors)
+greeting/GreetingController.java          @Controller  — routes -> service
+greeting/GreetingService.java             interface    — business layer
+greeting/DefaultGreetingService.java      @Service
+greeting/GreetingRepository.java          interface    — data-access layer
 greeting/InMemoryGreetingRepository.java  @Repository (default)
 greeting/JdbcGreetingRepository.java      @Repository (with --db)
 ```
 
 - Repositories and services are bound **as interfaces**, so the generated
   test swaps the repository in-memory and devtools traces calls through them.
+- The module owns its DB wiring (`DataSource` bean + `db` health check with
+  `--db`); `Application` stays free of dependency wiring.
 - Gradle build wired to `ligero-core`, `ligero-devtools`, `ligero-server-jdk`,
-  `ligero-json`; with `--db` a `DataSource` bean plus a `db` health check.
+  `ligero-json`.
 - An end-to-end test using `ligero-test`
 - **`Dockerfile`** (multi-stage: Gradle build → slim JRE runtime)
 - **`docker-compose.yml`** — with `--db postgres` it includes a PostgreSQL 16
@@ -54,6 +59,39 @@ curl localhost:8080/health          # {"status":"UP","checks":{"db":"UP"}} (with
 
 Then open **http://localhost:8080/ligero/dev**: the bean graph and a live
 trace of each request through controller → service → repository.
+
+## Generators (auto-registered, like Angular's CLI)
+
+Every generator writes the file **and** wires it into its module — the
+binding, the route, and (for modules) the entry in `Application.modules()`.
+No manual registration step.
+
+```bash
+ligero generate module Billing            # empty feature module, registered in Application
+ligero generate repository Invoice        # interface + in-memory impl, bound in the module
+ligero generate service Invoice           # interface + default impl (injects the repository if present)
+ligero generate controller Invoice        # controller + route, bound in the module
+ligero generate resource Invoice          # all of the above at once: a full CRUD slice
+```
+
+| Generator | Creates | Auto-wires |
+|---|---|---|
+| `module <Name>` | `<name>/<Name>Module.java` | registers it in `Application.modules()` |
+| `repository <Name>` | `<Name>Repository` + `InMemory<Name>Repository` | `builder.bind(...)` in the module |
+| `service <Name>` | `<Name>Service` + `Default<Name>Service` | binding (injects `<Name>Repository` if it exists) |
+| `controller <Name>` | `<Name>Controller` | binding + `register(app)` route (needs its service) |
+| `resource <Name>` | module + domain + repository + service + controller | every binding, the route, and the module registration |
+
+Pick the target module with `--module <Name>`. With a single module it's
+inferred; with several, it's required.
+
+```bash
+ligero generate service Invoice --module Billing
+```
+
+How it works: generated files carry `// ligero-cli:*` anchor comments, and
+the generators insert new lines just above them — so the wiring stays in
+ordinary, reviewable Java you can also edit by hand.
 
 ## Database options
 

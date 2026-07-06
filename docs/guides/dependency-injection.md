@@ -127,3 +127,30 @@ public final class Application {
 
 Binding repositories and services **as interfaces** keeps layers swappable
 (JDBC ↔ in-memory for tests) and lets devtools trace calls through them.
+
+## Modules: split the wiring by feature
+
+One `wire(...)` method works for a small app, but it grows. Group each
+feature's bindings and routes into a `LigeroModule` and let `Modules.install`
+assemble them — the wiring leaves the startup class entirely. See the
+[architecture guide](architecture.md) for the full picture; in short:
+
+```java
+public final class ProductsModule implements LigeroModule {
+    @Override public void beans(Beans.Builder builder) {
+        builder.bind(ProductRepository.class, b -> new JdbcProductRepository(b.get(DataSource.class)));
+        builder.bind(ProductService.class,    b -> new DefaultProductService(b.get(ProductRepository.class)));
+        builder.bind(ProductController.class, b -> new ProductController(b.get(ProductService.class)));
+    }
+    @Override public void routes(Ligero app, Beans beans) {
+        beans.get(ProductController.class).register(app);
+    }
+}
+
+// startup:
+Beans beans = Modules.install(app, devtools.recorder(), new ProductsModule(), new UsersModule());
+```
+
+All modules share one container (cross-module dependencies resolve
+naturally; duplicate bindings fail fast). The [CLI](../getting-started/cli.md)
+generates modules and auto-registers artifacts into them.

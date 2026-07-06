@@ -25,6 +25,7 @@ const sidebars = {
         'guides/testing',
         'guides/engines',
         'guides/dependency-injection',
+        'guides/architecture',
         'guides/devtools',
       ],
     },

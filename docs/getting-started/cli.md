@@ -11,8 +11,20 @@ ready-to-run projects — including Docker packaging and an optional database.
 ligero new my-api --package com.acme.api            # modular app
 ligero new my-api --db postgres                     # + PostgreSQL via Docker Compose
 ligero new my-api --db h2                            # + in-memory H2 (nothing to install)
+ligero new my-api --wiring processor                # annotate-only DI (compile-time generated)
 ligero generate resource Order                       # a whole CRUD slice (module + layers), wired
 ```
+
+## Wiring: `--wiring explicit` (default) or `--wiring processor`
+
+- **`explicit`** — hand-written modules with `bind(...)`; `ligero generate`
+  weaves new artifacts into them. Fully reflection-free.
+- **`processor`** — you only annotate classes; the optional
+  [`ligero-processor`](../guides/dependency-injection.md#optional-generate-the-wiring-at-compile-time)
+  generates the same `bind(...)` at compile time (still no runtime
+  reflection). No module to edit — add a feature by writing an annotated
+  class. See the [DI guide](../guides/dependency-injection.md) for the
+  before/after.
 
 ## What `new` generates
 

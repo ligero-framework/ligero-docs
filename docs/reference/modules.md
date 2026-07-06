@@ -18,6 +18,7 @@ sidebar_position: 1
 | `ligero-openapi` | core | OpenAPI 3 generation + Swagger UI |
 | `ligero-metrics-micrometer` | core, Micrometer | `MetricsCollector` adapter |
 | `ligero-devtools` | core | Dev dashboard: bean graph + live request traces |
+| `ligero-processor` | core (annotationProcessor) | Optional compile-time DI: generates `bind(...)` from annotations |
 | `ligero-test` | core | End-to-end test client |
 
 All published modules ship `module-info.java` (JPMS) with `provides`/`uses`

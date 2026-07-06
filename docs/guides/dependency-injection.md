@@ -154,3 +154,62 @@ Beans beans = Modules.install(app, devtools.recorder(), new ProductsModule(), ne
 All modules share one container (cross-module dependencies resolve
 naturally; duplicate bindings fail fast). The [CLI](../getting-started/cli.md)
 generates modules and auto-registers artifacts into them.
+
+## Optional: generate the wiring at compile time
+
+The explicit style is the default because it's the fastest and reflection-free.
+But if the `bind(...)` lines feel like boilerplate, an **opt-in** annotation
+processor (`ligero-processor`) writes them for you **at compile time** — no
+classpath scanning, no runtime reflection. It reads your stereotype
+annotations and generates the *same* explicit bindings.
+
+Turn it on with one dependency:
+
+```groovy
+// build.gradle
+annotationProcessor 'com.ligero:ligero-processor:0.2.0-SNAPSHOT'
+```
+
+Then you just annotate — no module, no `bind(...)`:
+
+```java
+@Repository class JdbcProductRepository implements ProductRepository {
+    JdbcProductRepository(DataSource ds) { ... }          // the constructor IS the wiring
+}
+@Service class DefaultProductService implements ProductService {
+    DefaultProductService(ProductRepository repo) { ... }
+}
+@Controller class ProductController {
+    ProductController(ProductService service) { ... }
+    public void register(Ligero app) { ... }
+}
+
+// third-party beans (a DataSource) come from a @Provides static method:
+@Provides static DataSource dataSource() { ... }
+
+// startup — the processor generated GeneratedModules for you:
+Beans beans = Modules.install(app, devtools.recorder(), GeneratedModules.all());
+```
+
+The processor emits one `LigeroModule` per package plus a single
+`GeneratedModules.all()`. The generated code is **byte-for-byte** what you'd
+write by hand, so startup speed and native-image behavior are identical —
+you're just not typing it.
+
+| | Explicit (default) | With the processor |
+|---|---|---|
+| Wiring | you write `bind(...)` | generated from annotations |
+| Runtime reflection | none | none |
+| Native image | clean | clean |
+| Startup | fastest | identical |
+| Config knobs | — | `@Service(as = X.class)` to pick the key; `@Provides` for third-party beans; `@Inject` to disambiguate a constructor |
+
+The two styles **mix**: pass hand-written modules and `GeneratedModules.all()`
+together to `Modules.install`. Remove the dependency and you're back to
+explicit wiring. Scaffold either with `ligero new --wiring=explicit`
+(default) or `--wiring=processor`.
+
+> Why not reflection-based auto-wiring (like Spring's `@Autowired`)? Because
+> runtime reflection is exactly what makes those frameworks slow to start and
+> awkward on GraalVM — the things Ligero is built to avoid. The processor
+> gives you the brevity without the cost, by moving the work to compile time.

@@ -32,7 +32,7 @@ const sidebars = {
     {
       type: 'category',
       label: 'Reference',
-      items: ['reference/modules', 'reference/architecture'],
+      items: ['reference/modules', 'reference/architecture', 'reference/benchmarks'],
     },
   ],
 };

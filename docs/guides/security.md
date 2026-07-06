@@ -73,6 +73,37 @@ app.use(SecurityHeadersMiddleware.builder()
 app.use(RateLimitMiddleware.of(100, 100)); // burst 100, 100 req/s per client IP
 ```
 
+## Secure by default (OWASP baseline)
+
+Every Ligero app starts with an OWASP-aligned baseline **enabled
+automatically** — no code required:
+
+- **Security headers** on every response: `X-Content-Type-Options: nosniff`,
+  `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`.
+- **Request hygiene**: paths carrying null bytes (`%00`), control characters
+  or percent-encoded traversal (`%2e%2e`) are rejected with `400` before any
+  handler runs.
+
+Disable it explicitly if you manage these concerns yourself (e.g. at an API
+gateway):
+
+```java
+Ligero app = Ligero.create(LigeroConfig.builder()
+    .secureDefaults(false)
+    .build());
+```
+
+or with `LIGERO_SECURE_DEFAULTS=false` / `ligero.secureDefaults=false`.
+When disabled, you can still add the pieces individually
+(`SecurityHeadersMiddleware`, `RequestHygieneMiddleware`).
+
+## Dependency scanning (OWASP)
+
+The framework repo runs [OWASP dependency-check](https://owasp.org/www-project-dependency-check/)
+(`./gradlew dependencyCheckAggregate`, failing on CVSS ≥ 7) on a weekly CI
+schedule, plus GitHub `dependency-review` on every PR. For your own apps the
+same Gradle plugin works out of the box.
+
 ## Defaults you get for free
 
 Request body limits (413), traversal-safe static files, opaque 500s

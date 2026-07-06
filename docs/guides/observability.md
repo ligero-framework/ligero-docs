@@ -44,10 +44,30 @@ The JSON form includes the request id when `RequestIdMiddleware` runs first.
 
 ## Distributed tracing
 
-`RequestIdMiddleware` parses the W3C `traceparent` header and exposes the trace
-id as the `traceId` attribute, so your logs and downstream calls can join traces
-started by a gateway or another service.
+Tracing is vendor-neutral by design: the core defines a `Tracer` SPI and a
+`TracingMiddleware`; **the client decides the backend**. The first adapter is
+`ligero-otel` (OpenTelemetry) — New Relic, Datadog, Jaeger and friends work
+through it via the OTel SDK/agent exporters, or can implement the SPI directly.
+
+```groovy
+implementation 'com.ligero:ligero-otel:0.2.0-SNAPSHOT'
+```
 
 ```java
-String traceId = ctx.attribute(RequestIdMiddleware.TRACE_ID_ATTRIBUTE);
+// With the OTel Java agent (or SDK autoconfigure), ServiceLoader finds the tracer:
+app.use(TracingMiddleware.fromServiceLoader());
+
+// Or wire an explicit SDK:
+app.use(new TracingMiddleware(new OtelTracer(openTelemetrySdk)));
 ```
+
+Per request you get a `SERVER` span that:
+
+- joins the incoming W3C `traceparent` (distributed traces across services),
+- is named by the matched route pattern (`GET /users/{id}` — bounded cardinality),
+- carries `http.request.method`, `url.path`, `http.route`, `http.response.status_code`,
+- records exceptions and marks the span as `ERROR` on failures,
+- exposes its trace id as the `traceId` context attribute for log correlation.
+
+Without any tracing backend, `RequestIdMiddleware` alone still parses
+`traceparent` and exposes `traceId` for logs.

@@ -4,11 +4,25 @@ sidebar_position: 9
 
 # Templates
 
-Server-side rendering goes through the `TemplateEngine` SPI. The first adapter
-is `ligero-template-mustache` (JMustache — a single small dependency):
+Server-side rendering goes through the `TemplateEngine` SPI. **Templates are
+fully optional** — a pure JSON microservice simply doesn't add any adapter and
+pays zero cost. Three adapters ship today; pick one:
+
+| Adapter | Engine | Syntax | Template files |
+|---|---|---|---|
+| `ligero-template-mustache` | JMustache | `{{name}}` (logic-less) | `templates/*.mustache` |
+| `ligero-template-freemarker` | FreeMarker | `${name}`, macros, includes | `templates/*.ftl` |
+| `ligero-template-pebble` | Pebble | `{{ name }}` (Twig/Jinja style, inheritance) | `templates/*.peb` |
+
+All three auto-escape HTML and are discovered via `ServiceLoader` — add the
+dependency and `ctx.render(...)` just works:
 
 ```groovy
 runtimeOnly 'com.ligero:ligero-template-mustache:0.2.0-SNAPSHOT'
+// or
+runtimeOnly 'com.ligero:ligero-template-freemarker:0.2.0-SNAPSHOT'
+// or
+runtimeOnly 'com.ligero:ligero-template-pebble:0.2.0-SNAPSHOT'
 ```
 
 Put templates on the classpath under `templates/`:

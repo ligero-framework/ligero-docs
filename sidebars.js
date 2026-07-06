@@ -24,6 +24,8 @@ const sidebars = {
         'guides/openapi',
         'guides/testing',
         'guides/engines',
+        'guides/dependency-injection',
+        'guides/devtools',
       ],
     },
     {

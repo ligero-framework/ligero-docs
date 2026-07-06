@@ -12,8 +12,12 @@ sidebar_position: 1
 | `ligero-json` | core, Jackson | `BodyMapper` implementation |
 | `ligero-auth` | core | JWT HS256, CSRF, sessions |
 | `ligero-template-mustache` | core, JMustache | `TemplateEngine` adapter |
+| `ligero-template-freemarker` | core, FreeMarker | `TemplateEngine` adapter |
+| `ligero-template-pebble` | core, Pebble | `TemplateEngine` adapter |
+| `ligero-otel` | core, OpenTelemetry API | `Tracer` adapter (W3C trace join) |
 | `ligero-openapi` | core | OpenAPI 3 generation + Swagger UI |
 | `ligero-metrics-micrometer` | core, Micrometer | `MetricsCollector` adapter |
+| `ligero-devtools` | core | Dev dashboard: bean graph + live request traces |
 | `ligero-test` | core | End-to-end test client |
 
 All published modules ship `module-info.java` (JPMS) with `provides`/`uses`

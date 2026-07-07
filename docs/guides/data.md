@@ -13,7 +13,8 @@ without ceremony.
 | Approach | When | How |
 |---|---|---|
 | **Raw JDBC** | full control, zero magic, smallest footprint | bind a `DataSource` as a bean, write SQL |
-| **`ligero-jpa`** | you want JPA/Hibernate but no boilerplate | `Jpa` helper over an `EntityManagerFactory` |
+| **`ligero-jdbc`** | SQL without the boilerplate, still no ORM | `Jdbc` helper: `query`/`update`/`tx` mapping rows to records |
+| **`ligero-jpa`** | you want JPA/Hibernate but no ceremony | `Jpa` helper over an `EntityManagerFactory` |
 | **jOOQ / MyBatis / Spring Data** | you already know and want them | bind them as beans — nothing stops you |
 
 Whatever you choose, it's just a **bean** in your module. Ligero has no opinion
@@ -42,6 +43,37 @@ public List<Product> findAll() {
     } catch (SQLException e) { throw new IllegalStateException(e); }
 }
 ```
+
+## Lighter than an ORM: `ligero-jdbc`
+
+`ligero-jdbc` keeps you writing SQL, but takes the boilerplate — connections,
+statements, result-set loops, transactions — off your hands. Rows map to your
+records via a `RowMapper`.
+
+```groovy
+implementation 'com.ligero:ligero-jdbc:0.2.0-SNAPSHOT'
+```
+
+```java
+Jdbc db = new Jdbc(dataSource);
+record Product(long id, String name) {}
+RowMapper<Product> asProduct = r -> new Product(r.getLong("id"), r.getString("name"));
+
+List<Product>     all = db.query("select id, name from products order by id", asProduct);
+Optional<Product> one = db.queryOne("select id, name from products where id = ?", asProduct, 7);
+long              id  = db.insert("insert into products(name) values (?)", "Keyboard"); // generated key
+int              rows = db.update("update products set name = ? where id = ?", "Mouse", id);
+
+// a transaction — commit on success, rollback on any exception
+db.tx(tx -> {
+    long pid = tx.insert("insert into products(name) values (?)", "Bundle");
+    tx.update("insert into stock(product_id, qty) values (?, ?)", pid, 100);
+    return pid;
+});
+```
+
+Failures wrap the SQL in a `JdbcException`. No ORM, no reflection — just a thin,
+predictable layer you can read in one file.
 
 ## JPA / Hibernate with `ligero-jpa`
 

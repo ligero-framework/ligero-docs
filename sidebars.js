@@ -27,6 +27,9 @@ const sidebars = {
         'guides/dependency-injection',
         'guides/architecture',
         'guides/devtools',
+        'guides/configuration-yaml',
+        'guides/data',
+        'guides/scaling',
       ],
     },
     {

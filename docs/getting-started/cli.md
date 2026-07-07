@@ -112,3 +112,17 @@ ordinary, reviewable Java you can also edit by hand.
 | *(none)* | No persistence — pure API |
 | `--db h2` | In-memory H2, schema created on startup. Ideal to try things instantly. |
 | `--db postgres` | Real PostgreSQL in Compose, seeded via `db/init.sql`; the app reads `DB_URL`/`DB_USER`/`DB_PASSWORD` (already set in Compose). |
+
+## About the CLI itself
+
+`ligero-cli` is written in **Java** (zero runtime dependencies) — it scaffolds
+Java projects, and its templates are type-checked Java, so Java is the natural
+home. It is **not** a Python tool.
+
+For distribution there are two options:
+
+- **Runnable jar / install dist** — works anywhere a JVM is present.
+- **GraalVM native image** — compile the CLI to a single self-contained binary
+  (`ligero`) with no JVM required, so it installs and starts like any native
+  CLI. This is the recommended distribution path; the CLI does no reflection,
+  so it builds native cleanly.

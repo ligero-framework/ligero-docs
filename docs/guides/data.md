@@ -137,6 +137,36 @@ public void beans(Beans.Builder b) {
 See the [`jpa-todo`](https://github.com/ligero-framework/ligero-examples)
 example for a complete, runnable CRUD app.
 
+## Migrations (`ligero-migrations`)
+
+Keep your schema in versioned SQL and apply it on boot with one call, powered
+by Flyway.
+
+```groovy
+implementation 'com.ligero:ligero-migrations:0.2.0-SNAPSHOT'
+```
+
+Put scripts under `src/main/resources/db/migration`:
+
+```
+db/migration/V1__init.sql
+db/migration/V2__add_active_column.sql
+```
+
+Run them before serving traffic:
+
+```java
+Migrations.run(dataSource);   // applies pending migrations from classpath:db/migration
+
+Ligero app = Ligero.create();
+app.beans(beans);
+app.start();
+```
+
+`run(...)` returns how many were applied and is idempotent — a second run does
+nothing. Prefer Liquibase or running Flyway from CI? Skip the module; it only
+removes the boilerplate for the common "migrate on boot" case.
+
 ## Why no built-in ORM?
 
 An ORM in the core would fight everything Ligero optimizes for — fast startup,

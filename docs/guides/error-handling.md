@@ -57,3 +57,22 @@ failed checks:
 ```json
 {"status": 400, "error": "Validation failed: name is required; age must be positive"}
 ```
+
+### Annotation-based validation (`ligero-validation`)
+
+Prefer standard constraints on a record? The optional `ligero-validation`
+module wraps Jakarta Bean Validation (Hibernate Validator):
+
+```java
+record NewUser(@NotBlank String name, @Email String email, @Min(18) int age) {}
+
+app.post("/users", ctx -> {
+    NewUser user = Validate.orThrow(ctx.body(NewUser.class));  // 400 with every violation
+    ctx.status(201).json(service.create(user));
+});
+```
+
+`Validate.orThrow(bean)` returns the bean or throws a `400` listing every
+`field: message`; `Validate.errors(bean)` is the non-throwing form. It's opt-in
+(Bean Validation uses reflection); `ctx.bodyValidator(...)` stays for
+reflection-free checks.

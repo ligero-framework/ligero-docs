@@ -126,3 +126,17 @@ For distribution there are two options:
   (`ligero`) with no JVM required, so it installs and starts like any native
   CLI. This is the recommended distribution path; the CLI does no reflection,
   so it builds native cleanly.
+
+## `ligero dev` — hot reload
+
+Run the app and restart it on every source change — a simple watch → rebuild →
+restart loop, no extra dependencies.
+
+```bash
+cd my-api
+ligero dev        # runs the app, restarts on changes under src/main (Ctrl+C to stop)
+```
+
+It launches the app via Gradle (`./gradlew run` when a wrapper is present,
+otherwise `gradle run`), watches the whole `src/main` tree and debounces bursts
+of saves into one restart.

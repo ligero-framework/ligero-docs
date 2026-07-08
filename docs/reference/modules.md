@@ -20,7 +20,10 @@ sidebar_position: 1
 | `ligero-devtools` | core | Dev dashboard: bean graph + live request traces |
 | `ligero-processor` | core (annotationProcessor) | Optional compile-time DI: generates `bind(...)` from annotations |
 | `ligero-config-yaml` | core, SnakeYAML | `ConfigSource`: `ligero.yml` + profiles + `${ENV:-default}` |
+| `ligero-jdbc` | core | Tiny DataSource helper: `query`/`update`/`tx`, rows → records |
 | `ligero-jpa` | core, Jakarta Persistence API | Thin JPA/Hibernate helper (bring your own provider) |
+| `ligero-migrations` | core, Flyway | `Migrations.run(dataSource)` — Flyway migrations at startup |
+| `ligero-validation` | core, Hibernate Validator | Annotation-based request validation → 400 |
 | `ligero-redis` | core, auth, Jedis | Distributed rate-limit + session stores |
 | `ligero-test` | core | End-to-end test client |
 

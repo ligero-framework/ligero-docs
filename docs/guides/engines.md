@@ -22,9 +22,24 @@ runtimeOnly 'com.ligero:ligero-server-jetty:0.2.0-SNAPSHOT'
 | Virtual threads | ✓ | ✓ |
 | gzip | ✓ | ✓ (GzipHandler) |
 | WebSockets | ✗ (fails fast with guidance) | ✓ |
+| HTTP/2 | ✗ (`com.sun.net.httpserver` is HTTP/1.1 only) | ✓ (h2c) |
 
 Both engines run the framework's full integration suite — same behavior for
 routing, errors, body limits, redirects and headers.
+
+## HTTP/2
+
+The default JDK engine speaks **HTTP/1.1 only** — that's a limitation of
+`com.sun.net.httpserver`, not of Ligero. For HTTP/2, use the **Jetty engine**:
+it carries an HTTP/1.1 and an HTTP/2 cleartext (**h2c**) connection factory on
+the same port, so h2c-capable clients negotiate HTTP/2 (via upgrade or prior
+knowledge) and HTTP/1.1 clients are unaffected — no code change, just the
+dependency swap above.
+
+```java
+// Java's HttpClient asks for HTTP/2 and gets it:
+HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+```
 
 ## Writing an engine
 

@@ -106,4 +106,6 @@ Same products CRUD app, measured identically (see [Benchmarks](reference/benchma
 | Throughput | **~13k req/s** | ~11k | ~5.8k |
 | Dependency size | **3 MB** | 8 MB | 20 MB |
 
-Continue with the [Quickstart](getting-started/quickstart).
+Ready to dive in? Start with the [Quickstart](getting-started/quickstart), or
+follow the [Learning Path](learning-path) for a guided route from your first
+route to a production service.

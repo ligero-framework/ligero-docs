@@ -3,39 +3,79 @@
 const sidebars = {
   docs: [
     'intro',
+    'learning-path',
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['getting-started/installation', 'getting-started/quickstart', 'getting-started/cli'],
+      collapsed: false,
+      items: [
+        'getting-started/installation',
+        'getting-started/quickstart',
+        'getting-started/cli',
+      ],
     },
     {
       type: 'category',
-      label: 'Guides',
+      label: 'HTTP Core',
       items: [
         'guides/routing',
         'guides/context',
         'guides/middleware',
         'guides/error-handling',
-        'guides/configuration',
-        'guides/security',
-        'guides/observability',
-        'guides/realtime',
-        'guides/templates',
-        'guides/openapi',
-        'guides/testing',
-        'guides/engines',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Structure & DI',
+      items: [
         'guides/dependency-injection',
         'guides/architecture',
         'guides/devtools',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Configuration',
+      items: [
+        'guides/configuration',
         'guides/configuration-yaml',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Data',
+      items: [
         'guides/data',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Web & Real-time',
+      items: [
+        'guides/templates',
+        'guides/realtime',
+        'guides/openapi',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Harden & Ship',
+      items: [
+        'guides/security',
+        'guides/testing',
+        'guides/observability',
+        'guides/engines',
         'guides/scaling',
       ],
     },
     {
       type: 'category',
       label: 'Reference',
-      items: ['reference/modules', 'reference/architecture', 'reference/benchmarks'],
+      items: [
+        'reference/modules',
+        'reference/architecture',
+        'reference/benchmarks',
+      ],
     },
   ],
 };

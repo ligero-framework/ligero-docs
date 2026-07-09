@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ligero Framework — Lightweight Java Web Framework</title>
-  <meta name="description" content="Ligero is a lightweight, minimalist Java web framework">
+  <meta name="description" content="Ligero is a lightweight, minimalist Java web framework for building modern web applications and APIs with zero dependencies, virtual threads, and an expressive API.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -13,190 +13,329 @@
     :root {
       --navy: #06234f;
       --primary: #1e5fd6;
-      --border: #e2e8f0;
+      --primary-light: #6f99e6;
+      --sky: #93b2e8;
+      --bg: #ffffff;
       --text: #1a202c;
       --text2: #5a6a85;
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: #fff;
+      background: var(--bg);
       color: var(--text);
       line-height: 1.5;
+      overflow-x: hidden;
     }
     .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
 
+    /* ─── HERO ─── */
     .hero {
+      position: relative;
       text-align: center;
-      padding: 100px 32px 60px;
+      padding: 80px 32px 60px;
+      overflow: hidden;
     }
-    .hero .whale { width: 160px; height: auto; margin-bottom: 16px; }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -300px; left: 50%; transform: translateX(-50%);
+      width: 1000px; height: 800px;
+      background: radial-gradient(ellipse, rgba(30,95,214,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(6,214,160,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero .whale {
+      width: 140px; height: auto;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 20px 60px rgba(6,35,79,0.15));
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .hero .badge {
+      display: inline-block;
+      background: rgba(30,95,214,0.08);
+      border: 1px solid rgba(30,95,214,0.15);
+      padding: 6px 18px; border-radius: 100px;
+      font-size: 13px; font-weight: 600;
+      color: var(--primary); margin-bottom: 20px;
+    }
     .hero h1 {
-      font-size: 72px; font-weight: 900;
-      color: var(--navy); letter-spacing: -2px;
-      margin-bottom: 12px;
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -2.5px;
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--primary), #7C3AED);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     .hero p {
-      font-size: 22px; color: var(--text2);
-      max-width: 600px; margin: 0 auto 36px;
-      line-height: 1.5;
+      font-size: clamp(17px, 2.2vw, 21px);
+      color: var(--text2);
+      max-width: 580px; margin: 0 auto 32px;
+      line-height: 1.6;
     }
-    .hero .links { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .hero .links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
     .hero .links a {
-      text-decoration: none;
-      font-size: 18px; font-weight: 600;
-      padding: 14px 36px; border-radius: 10px;
-      border: 2px solid var(--border);
-      transition: all 0.2s;
-      color: var(--primary);
-    }
-    .hero .links a:hover {
-      border-color: var(--primary);
-      background: rgba(30, 95, 214, 0.04);
+      text-decoration: none; font-size: 17px; font-weight: 600;
+      padding: 14px 34px; border-radius: 12px;
+      transition: all 0.3s ease; border: none;
     }
     .hero .links a.primary {
-      background: var(--primary); color: #fff; border-color: var(--primary);
+      background: linear-gradient(135deg, var(--primary), #7C3AED);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(30,95,214,0.3);
     }
-    .hero .links a.primary:hover { background: #1a4fb8; }
+    .hero .links a.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 48px rgba(30,95,214,0.4);
+    }
+    .hero .links a.secondary {
+      background: rgba(30,95,214,0.06);
+      color: var(--navy);
+      border: 1.5px solid rgba(30,95,214,0.15);
+    }
+    .hero .links a.secondary:hover {
+      background: rgba(30,95,214,0.1);
+      transform: translateY(-3px);
+    }
 
+    /* ─── CODE BLOCK ─── */
     .hero-code {
       margin: 48px auto 0;
-      max-width: 680px;
-      background: #f8fafd;
-      border: 1px solid var(--border);
-      border-radius: 14px;
+      max-width: 640px;
+      background: #0f172a;
+      border-radius: 16px;
       overflow: hidden;
       text-align: left;
+      box-shadow: 0 24px 80px rgba(6,35,79,0.12);
+      position: relative;
+      z-index: 1;
     }
     .hero-code .bar {
       display: flex; align-items: center; gap: 8px;
-      padding: 14px 20px;
-      background: rgba(6, 35, 79, 0.03);
-      border-bottom: 1px solid var(--border);
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-    .hero-code .bar .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .hero-code .bar .dot { width: 10px; height: 10px; border-radius: 50%; }
     .hero-code .bar .dot:nth-child(1) { background: #FF5F56; }
     .hero-code .bar .dot:nth-child(2) { background: #FFBD2E; }
     .hero-code .bar .dot:nth-child(3) { background: #27C93F; }
     .hero-code .bar span {
-      color: var(--text2); font-size: 14px;
+      color: #64748b; font-size: 13px;
       font-family: 'JetBrains Mono', monospace; margin-left: 12px;
     }
     .hero-code pre {
       padding: 24px 28px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 15px;
-      line-height: 2;
+      font-size: 14px; line-height: 2;
       overflow-x: auto;
+      color: #cbd5e1;
     }
-    .hero-code pre .kw { color: #7C3AED; }
-    .hero-code pre .fn { color: #059669; }
-    .hero-code pre .str { color: #DC2626; }
-    .hero-code pre .cm { color: #94a3b8; }
-    .hero-code pre .nu { color: #D97706; }
-    .hero-code pre .tp { color: #2563eb; }
+    .hero-code pre .kw { color: #a78bfa; }
+    .hero-code pre .fn { color: #34d399; }
+    .hero-code pre .str { color: #fb7185; }
+    .hero-code pre .cm { color: #475569; }
+    .hero-code pre .nu { color: #fbbf24; }
+    .hero-code pre .tp { color: #60a5fa; }
 
+    /* ─── SECTIONS ─── */
     section { padding: 100px 0; }
-    section:nth-child(even) { background: #f8fafd; }
-
-    h2 {
-      font-size: 36px; font-weight: 800;
-      color: var(--navy); letter-spacing: -1px;
-      margin-bottom: 40px;
+    .section-title {
+      font-size: clamp(32px, 4vw, 42px);
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+    .section-sub {
+      font-size: 18px;
+      color: var(--text2);
+      max-width: 520px;
+      line-height: 1.6;
+      margin-bottom: 48px;
     }
 
+    /* ─── FEATURES ─── */
+    #features { background: linear-gradient(180deg, #fff 0%, #f8fafd 100%); }
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
+      gap: 20px;
     }
     .feature-card {
-      padding: 32px;
+      padding: 36px 32px;
       background: #fff;
-      border: 1px solid var(--border);
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), #7C3AED);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(6,35,79,0.08);
+      border-color: transparent;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card .icon {
+      width: 52px; height: 52px;
       border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, rgba(30,95,214,0.08), rgba(124,58,237,0.08));
     }
     .feature-card h3 {
       font-size: 20px; font-weight: 700;
       color: var(--navy); margin-bottom: 8px;
     }
     .feature-card p {
-      font-size: 16px; color: var(--text2); line-height: 1.7;
+      font-size: 15px; color: var(--text2); line-height: 1.7;
     }
 
+    /* ─── MODULES ─── */
+    #modules {
+      background: var(--navy);
+      position: relative;
+    }
+    #modules::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(600px 400px at 70% 30%, rgba(30,95,214,0.15), transparent);
+      pointer-events: none;
+    }
+    #modules .section-title { color: #fff; }
+    #modules .section-sub { color: #93b2e8; }
     .modules-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      position: relative;
+      z-index: 1;
     }
     .module-tag {
-      padding: 16px 20px;
-      background: #fff;
-      border: 1px solid var(--border);
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 10px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 14px;
-      color: var(--text2);
+      font-size: 13px;
+      color: #93b2e8;
+      transition: all 0.25s ease;
     }
-    .module-tag .tag { color: var(--primary); font-weight: 600; }
+    .module-tag:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .module-tag .tag { color: #6f99e6; }
 
+    /* ─── STATS ─── */
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 32px; text-align: center;
     }
     .stats .num {
-      font-size: 52px; font-weight: 900;
-      color: var(--navy);
+      font-size: 56px; font-weight: 900;
+      background: linear-gradient(135deg, var(--navy), #7C3AED);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .stats .num .accent { color: var(--primary); }
     .stats .label {
-      font-size: 17px; color: var(--text2); margin-top: 4px;
+      font-size: 16px; font-weight: 500;
+      color: var(--text2); margin-top: 4px;
     }
 
+    /* ─── CTA ─── */
     .cta {
-      text-align: center; padding: 100px 0;
+      text-align: center;
+      padding: 120px 32px;
+      background: linear-gradient(180deg, #fff 0%, #f8fafd 100%);
     }
-    .cta h2 { margin-bottom: 16px; }
+    .cta h2 {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
     .cta p {
-      font-size: 20px; color: var(--text2);
-      max-width: 500px; margin: 0 auto 32px;
+      font-size: 19px; color: var(--text2);
+      max-width: 480px; margin: 0 auto 32px;
     }
 
+    /* ─── FOOTER ─── */
     footer {
       padding: 40px 0;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid #e2e8f0;
       text-align: center;
     }
-    footer p { color: var(--text2); font-size: 15px; }
-    footer a { color: var(--text2); text-decoration: none; }
+    footer p { color: var(--text2); font-size: 14px; }
+    footer a { color: var(--text2); text-decoration: none; transition: color 0.2s; }
     footer a:hover { color: var(--primary); }
 
+    /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
-      .hero h1 { font-size: 48px; }
-      .hero .whale { width: 120px; }
-      .hero p { font-size: 18px; }
-      h2 { font-size: 28px; }
+      .hero { padding: 60px 24px 40px; }
+      .hero .whale { width: 100px; }
       .features-grid { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: 1fr 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .stats .num { font-size: 40px; }
+      section { padding: 60px 0; }
     }
     @media (max-width: 480px) {
-      .hero h1 { font-size: 36px; }
-      .hero .whale { width: 100px; }
       .stats { grid-template-columns: 1fr; }
       .hero .links { flex-direction: column; align-items: center; }
       .hero .links a { width: 100%; max-width: 300px; text-align: center; }
+      .modules-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
   <div class="hero">
+    <div class="badge">&#x26a1; Java 21+ &middot; Virtual Threads &middot; Zero Dependencies</div>
     <img src="../static/img/Ligero.svg" alt="Ligero" class="whale">
-    <h1>Ligero</h1>
-    <p>A lightweight Java web framework for modern applications.<br>Zero dependencies. Virtual threads. Expressive API.</p>
+    <h1>
+      Build web apps<br>
+      that are <span class="gradient">truly lightweight</span>
+    </h1>
+    <p>
+      A minimalist Java web framework with an expressive API, virtual threads by default,
+      and zero dependencies in the core. No magic. Just clean code.
+    </p>
     <div class="links">
-      <a href="https://doc.ligeroframework.com" class="primary">Get Started</a>
-      <a href="https://github.com/ligero-framework/ligero">GitHub</a>
+      <a href="https://doc.ligeroframework.com" class="primary">Get Started &rarr;</a>
+      <a href="https://github.com/ligero-framework/ligero" class="secondary">View on GitHub</a>
     </div>
 
     <div class="hero-code">
@@ -220,56 +359,64 @@
     </div>
   </div>
 
-  <section>
+  <section id="features">
     <div class="container">
-      <h2>Features</h2>
+      <h2 class="section-title">Built for developers who care about quality</h2>
+      <p class="section-sub">Every feature is optional. Every abstraction is leak-proof. Every default is secure.</p>
       <div class="features-grid">
         <div class="feature-card">
-          <h3>Blazing Fast</h3>
-          <p>Zero dependencies in the core. Served on Java 21 virtual threads. Trie-based router resolves in ~140ns with 300+ routes.</p>
+          <div class="icon">&#x26a1;</div>
+          <h3>Blazing Performance</h3>
+          <p>Zero dependencies in the core. Virtual threads for every request. Trie-based router resolves in ~140 nanoseconds — even with 300+ routes.</p>
         </div>
         <div class="feature-card">
-          <h3>Expressive API</h3>
-          <p>Express-inspired handler API. Define routes, middleware, and error handlers with clean, readable code.</p>
+          <div class="icon">&#x1f4dd;</div>
+          <h3>Express-inspired API</h3>
+          <p>Clean, fluent handler API that feels familiar. Define routes, compose middleware, and handle errors with minimal ceremony.</p>
         </div>
         <div class="feature-card">
+          <div class="icon">&#x1f6e1;&#xfe0f;</div>
           <h3>Secure by Default</h3>
-          <p>OWASP-aligned security headers, request hygiene, and CSRF protection enabled automatically. Safe out of the box.</p>
+          <p>OWASP-aligned security headers, request path hygiene, stateless CSRF — all enabled out of the box. Production-ready from the first route.</p>
         </div>
         <div class="feature-card">
-          <h3>Pluggable SPIs</h3>
-          <p>Server engines, JSON mappers, template engines, tracing — all via ServiceLoader. Swap without code changes.</p>
+          <div class="icon">&#x1f504;</div>
+          <h3>Real-time & Reactive</h3>
+          <p>Server-Sent Events in core. WebSockets via the Jetty engine. Build live features without the complexity of traditional reactive stacks.</p>
         </div>
         <div class="feature-card">
-          <h3>Compile-time DI</h3>
-          <p>Optional annotation processor generates explicit wiring at compile time. No reflection, no classpath scanning.</p>
+          <div class="icon">&#x1f9f0;</div>
+          <h3>Pluggable by Design</h3>
+          <p>Server engines, JSON mappers, template engines, tracing — all wired via ServiceLoader. Swap implementations without touching your code.</p>
         </div>
         <div class="feature-card">
-          <h3>Observable by Design</h3>
-          <p>Per-route Micrometer metrics, OpenTelemetry tracing, structured access logs, and a live devtools dashboard.</p>
+          <div class="icon">&#x1f4ca;</div>
+          <h3>Observable from Day One</h3>
+          <p>Per-route metrics (Micrometer), OpenTelemetry tracing, structured access logs, and a live devtools dashboard. Know what your app is doing.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section>
+  <section id="modules">
     <div class="container">
-      <h2>Modules</h2>
+      <h2 class="section-title">Modular ecosystem</h2>
+      <p class="section-sub">Eighteen optional modules. Add what you need. Leave the rest behind.</p>
       <div class="modules-grid">
         <div class="module-tag"><span class="tag">core</span> &mdash; API, router, DI</div>
-        <div class="module-tag"><span class="tag">server-jdk</span> &mdash; JDK http server</div>
-        <div class="module-tag"><span class="tag">server-jetty</span> &mdash; Jetty + HTTP/2</div>
+        <div class="module-tag"><span class="tag">server-jdk</span> &mdash; JDK engine</div>
+        <div class="module-tag"><span class="tag">server-jetty</span> &mdash; HTTP/2 + WebSocket</div>
         <div class="module-tag"><span class="tag">json</span> &mdash; Jackson body mapper</div>
         <div class="module-tag"><span class="tag">auth</span> &mdash; JWT, CSRF, sessions</div>
         <div class="module-tag"><span class="tag">openapi</span> &mdash; OpenAPI 3 + Swagger</div>
         <div class="module-tag"><span class="tag">jdbc</span> &mdash; SQL query helper</div>
-        <div class="module-tag"><span class="tag">jpa</span> &mdash; JPA/Hibernate helper</div>
-        <div class="module-tag"><span class="tag">redis</span> &mdash; Rate-limit + sessions</div>
+        <div class="module-tag"><span class="tag">jpa</span> &mdash; JPA/Hibernate</div>
+        <div class="module-tag"><span class="tag">redis</span> &mdash; Distributed stores</div>
         <div class="module-tag"><span class="tag">otel</span> &mdash; OpenTelemetry</div>
         <div class="module-tag"><span class="tag">validation</span> &mdash; Bean Validation</div>
         <div class="module-tag"><span class="tag">migrations</span> &mdash; Flyway</div>
         <div class="module-tag"><span class="tag">config-yaml</span> &mdash; YAML + profiles</div>
-        <div class="module-tag"><span class="tag">template-*</span> &mdash; Mustache, FreeMarker, Pebble</div>
+        <div class="module-tag"><span class="tag">templates</span> &mdash; Mustache, FreeMarker, Pebble</div>
         <div class="module-tag"><span class="tag">metrics</span> &mdash; Micrometer</div>
         <div class="module-tag"><span class="tag">devtools</span> &mdash; Debug dashboard</div>
         <div class="module-tag"><span class="tag">test</span> &mdash; E2E testing</div>
@@ -282,20 +429,20 @@
     <div class="container">
       <div class="stats">
         <div>
-          <div class="num"><span class="accent">0</span></div>
-          <div class="label">Core Dependencies</div>
+          <div class="num">0</div>
+          <div class="label">Core dependencies</div>
         </div>
         <div>
-          <div class="num">~140<span class="accent">ns</span></div>
-          <div class="label">Route Resolution</div>
+          <div class="num">~140ns</div>
+          <div class="label">Route resolution</div>
         </div>
         <div>
-          <div class="num"><span class="accent">18</span></div>
-          <div class="label">Optional Modules</div>
+          <div class="num">18</div>
+          <div class="label">Optional modules</div>
         </div>
         <div>
-          <div class="num">Java <span class="accent">21+</span></div>
-          <div class="label">Virtual Threads</div>
+          <div class="num">Java 21+</div>
+          <div class="label">Virtual threads</div>
         </div>
       </div>
     </div>
@@ -303,11 +450,11 @@
 
   <div class="cta">
     <div class="container">
-      <h2>Ready to build?</h2>
-      <p>Get started in minutes. No heavyweight containers, no XML config, no magic.</p>
+      <h2>Start building in minutes</h2>
+      <p>No heavyweight containers. No XML configuration. No magic. Just clean, modern Java.</p>
       <div class="hero links">
-        <a href="https://doc.ligeroframework.com" class="primary">Read the Docs</a>
-        <a href="https://github.com/ligero-framework/ligero">Star on GitHub</a>
+        <a href="https://doc.ligeroframework.com" class="primary">Read the Documentation &rarr;</a>
+        <a href="https://github.com/ligero-framework/ligero" class="secondary">GitHub &middot; 0 dependencies</a>
       </div>
     </div>
   </div>

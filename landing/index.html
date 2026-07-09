@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ligero — Lightweight Java Web Framework</title>
-  <meta name="description" content="A lightweight Java web framework for modern applications. Zero dependencies. Virtual threads. Expressive API.">
+  <meta name="description" content="A lightweight Java web framework for modern applications.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -12,13 +12,12 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', sans-serif;
-      background: #fff;
-      color: #1a202c;
+      background: #ffffff;
+      color: #06234f;
       line-height: 1.5;
       overflow-x: hidden;
     }
 
-    /* HERO */
     .hero {
       min-height: 100vh;
       display: flex;
@@ -28,25 +27,23 @@
       text-align: center;
       padding: 40px 24px;
       position: relative;
-      background: linear-gradient(180deg, #f8fafd 0%, #fff 40%);
     }
     .hero .glow {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 700px; height: 700px;
-      background: radial-gradient(ellipse, rgba(30,95,214,0.06) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(37,99,235,0.05) 0%, transparent 70%);
       pointer-events: none;
     }
     .hero .whale-wrap {
       position: relative;
       margin-bottom: 24px;
     }
-    .hero .whale-wrap svg {
-      width: 320px;
+    .hero .whale-wrap img {
+      width: 340px;
       height: auto;
       display: block;
-      filter: drop-shadow(0 30px 80px rgba(6,35,79,0.12));
     }
     .hero h1 {
       font-size: clamp(48px, 7vw, 72px);
@@ -56,15 +53,10 @@
       line-height: 1.05;
       margin-bottom: 16px;
     }
-    .hero h1 span {
-      background: linear-gradient(135deg, #1e5fd6, #7C3AED);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+    .hero h1 .accent { color: #2563eb; }
     .hero p {
       font-size: 20px;
-      color: #5a6a85;
+      color: #676767;
       max-width: 540px;
       margin-bottom: 32px;
     }
@@ -77,24 +69,23 @@
       transition: all 0.3s ease;
     }
     .hero .links a.primary {
-      background: linear-gradient(135deg, #1e5fd6, #7C3AED);
-      color: #fff;
-      box-shadow: 0 8px 32px rgba(30,95,214,0.25);
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 8px 32px rgba(37,99,235,0.25);
     }
     .hero .links a.primary:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 48px rgba(30,95,214,0.35);
+      box-shadow: 0 12px 48px rgba(37,99,235,0.35);
     }
     .hero .links a.ghost {
       color: #06234f;
-      border: 1.5px solid #e2e8f0;
+      border: 1.5px solid #d4d4d4;
     }
     .hero .links a.ghost:hover {
-      border-color: #1e5fd6;
-      background: rgba(30,95,214,0.04);
+      border-color: #2563eb;
+      background: rgba(37,99,235,0.04);
     }
 
-    /* CODE */
     .code-block {
       margin-top: 48px;
       width: 100%;
@@ -116,7 +107,7 @@
     .code-block .bar .dot:nth-child(2) { background: #FFBD2E; }
     .code-block .bar .dot:nth-child(3) { background: #27C93F; }
     .code-block .bar span {
-      color: #64748b; font-size: 13px;
+      color: #676767; font-size: 13px;
       font-family: 'JetBrains Mono', monospace; margin-left: 12px;
     }
     .code-block pre {
@@ -126,13 +117,12 @@
       overflow-x: auto;
       color: #cbd5e1;
     }
-    .code-block pre .kw { color: #a78bfa; }
+    .code-block pre .kw { color: #93b2e8; }
     .code-block pre .fn { color: #34d399; }
     .code-block pre .str { color: #fb7185; }
     .code-block pre .nu { color: #fbbf24; }
     .code-block pre .tp { color: #60a5fa; }
 
-    /* SECTIONS */
     section { padding: 100px 0; }
     .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
     h2 {
@@ -141,8 +131,7 @@
       margin-bottom: 40px;
     }
 
-    /* FEATURES */
-    #features { background: #f8fafd; }
+    #features { background: #fcfbfa; }
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -150,39 +139,30 @@
     }
     .feature {
       padding: 32px;
-      background: #fff;
-      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      border: 1px solid #d4d4d4;
       border-radius: 16px;
       transition: all 0.3s;
     }
     .feature:hover {
       transform: translateY(-4px);
       box-shadow: 0 20px 60px rgba(6,35,79,0.06);
-      border-color: transparent;
+      border-color: #93b2e8;
     }
-    .feature .icon {
-      font-size: 28px; margin-bottom: 16px;
-    }
+    .feature .icon { font-size: 28px; margin-bottom: 16px; }
     .feature h3 { font-size: 19px; font-weight: 700; color: #06234f; margin-bottom: 6px; }
-    .feature p { font-size: 15px; color: #5a6a85; line-height: 1.7; }
+    .feature p { font-size: 15px; color: #676767; line-height: 1.7; }
 
-    /* MODULES DARK */
     #modules {
       background: #06234f;
       position: relative;
     }
-    #modules::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(600px 400px at 70% 30%, rgba(30,95,214,0.15), transparent);
-      pointer-events: none;
-    }
-    #modules h2 { color: #fff; }
+    #modules h2 { color: #ffffff; }
+    #modules p { color: #93b2e8; }
     .modules {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 10px;
-      position: relative; z-index: 1;
     }
     .modules span {
       padding: 14px 18px;
@@ -197,12 +177,11 @@
     .modules span:hover {
       background: rgba(255,255,255,0.08);
       border-color: rgba(255,255,255,0.15);
-      color: #fff;
+      color: #ffffff;
       transform: translateY(-2px);
     }
-    .modules span em { color: #6f99e6; font-style: normal; }
+    .modules span em { color: #93b2e8; font-style: normal; }
 
-    /* STATS */
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -210,32 +189,30 @@
     }
     .stats .num {
       font-size: 56px; font-weight: 900;
-      background: linear-gradient(135deg, #06234f, #7C3AED);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #06234f;
     }
-    .stats .label { font-size: 16px; color: #5a6a85; margin-top: 4px; }
+    .stats .num .accent { color: #2563eb; }
+    .stats .label { font-size: 16px; color: #676767; margin-top: 4px; }
 
-    /* CTA */
     .cta {
       text-align: center;
       padding: 120px 32px;
+      background: #fcfbfa;
     }
     .cta h2 { margin-bottom: 12px; }
-    .cta p { font-size: 19px; color: #5a6a85; max-width: 460px; margin: 0 auto 32px; }
+    .cta p { font-size: 19px; color: #676767; max-width: 460px; margin: 0 auto 32px; }
 
     footer {
       padding: 40px 0;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #d4d4d4;
       text-align: center;
     }
-    footer p { color: #5a6a85; font-size: 14px; }
-    footer a { color: #5a6a85; text-decoration: none; }
-    footer a:hover { color: #1e5fd6; }
+    footer p { color: #676767; font-size: 14px; }
+    footer a { color: #676767; text-decoration: none; }
+    footer a:hover { color: #2563eb; }
 
     @media (max-width: 768px) {
-      .hero .whale-wrap svg { width: 200px; }
+      .hero .whale-wrap svg { width: 220px; }
       .hero h1 { font-size: 36px; }
       .features { grid-template-columns: 1fr; }
       .stats { grid-template-columns: 1fr 1fr; }
@@ -243,7 +220,7 @@
       h2 { font-size: 28px; }
     }
     @media (max-width: 480px) {
-      .hero .whale-wrap svg { width: 150px; }
+      .hero .whale-wrap svg { width: 160px; }
       .stats { grid-template-columns: 1fr; }
       .hero .links { flex-direction: column; align-items: center; }
       .hero .links a { width: 100%; text-align: center; }
@@ -255,11 +232,9 @@
   <div class="hero">
     <div class="glow"></div>
     <div class="whale-wrap">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="316 16 203 180.495" fill="none">
-        <path d="M450.309 65.707Q451.35 65.486 451.598 65.971Q452.044 67.161 453.084 67.822Q457.166 70.274 463.69 70.554Q469.866 71.321 473.008 74.784Q474.382 76.207 474.693 78.574L474.99 78.486Q476.479 75.756 479.054 73.991Q483.509 70.549 491.345 70.113Q499.061 69.395 503.438 65.707Q504.642 67.016 503.934 70.025Q501.99 77.727 495.905 81.747Q491.653 85.017 485.398 86.506Q480.6 87.175 478.162 89.943Q473.484 112.664 457.248 125.108Q445.992 134.666 428.106 138.328Q423.558 131.178 417.203 125.637L410.066 120.525L409.967 120.789C417.141 128.229 423.919 135.969 430.287 143.968L430.287 143.968L431.773 145.114C432.243 145.367 432.242 145.923 432.17 146.348L432.17 146.348L431.476 147.141Q429.295 148.022 425.529 147.493Q410.502 145.079 402.434 136.477Q395.879 130.495 391.729 122.376Q389.886 115.377 384.691 111.359Q380.902 108.735 375.374 107.658Q365.341 103.975 357.631 98.227Q353.356 95.154 348.413 92.675Q344.016 89.71 336.518 89.502Q333.745 89.681 332.157 90.912L332.058 89.767Q333.337 84.735 337.311 82.099Q345.496 74.923 362.686 75.754Q377.737 77.266 388.755 82.364Q399.533 86.265 409.075 91.265Q416.459 94.923 424.637 97.875Q433.892 102.337 448.327 102.193Q459.581 100.919 465.276 94.702Q467.635 92.745 467.854 88.885Q467.386 86.921 465.772 85.977Q458.433 83.601 453.58 79.015Q449.491 75.247 449.615 67.734Q449.617 66.413 450.309 65.707Z" fill="#06234f"/>
-      </svg>
+      <img src="../static/img/Ligero.svg" alt="Ligero">
     </div>
-    <h1>Build web apps<br>that are <span>truly lightweight</span></h1>
+    <h1>Build web apps<br>that are <span class="accent">truly lightweight</span></h1>
     <p>A minimalist Java web framework. Zero core dependencies. Virtual threads. Express-inspired API. No magic, just code.</p>
     <div class="links">
       <a href="https://doc.ligeroframework.com" class="primary">Get Started &rarr;</a>
@@ -287,7 +262,7 @@
 
   <section id="features">
     <div class="container">
-      <h2>Built for developers<br>who care about quality</h2>
+      <h2>Built for developers</h2>
       <div class="features">
         <div class="feature">
           <div class="icon">&#x26a1;</div>
@@ -312,7 +287,7 @@
         <div class="feature">
           <div class="icon">&#x1f9f0;</div>
           <h3>Pluggable</h3>
-          <p>Engines, JSON, templates, tracing — all via ServiceLoader. Swap without code changes.</p>
+          <p>Engines, JSON, templates, tracing via ServiceLoader. Swap without code changes.</p>
         </div>
         <div class="feature">
           <div class="icon">&#x1f4ca;</div>
@@ -326,7 +301,7 @@
   <section id="modules">
     <div class="container">
       <h2>Modular ecosystem</h2>
-      <p style="color:#93b2e8;margin-bottom:40px;font-size:18px;max-width:480px;">Add what you need. Leave the rest. Eighteen optional modules.</p>
+      <p>Add what you need. Leave the rest behind.</p>
       <div class="modules">
         <span><em>core</em> &mdash; API, router, DI</span>
         <span><em>server-jdk</em> &mdash; JDK engine</span>
@@ -353,10 +328,10 @@
   <section>
     <div class="container">
       <div class="stats">
-        <div><div class="num">0</div><div class="label">Core dependencies</div></div>
-        <div><div class="num">~140ns</div><div class="label">Route resolution</div></div>
-        <div><div class="num">18</div><div class="label">Optional modules</div></div>
-        <div><div class="num">Java 21+</div><div class="label">Virtual threads</div></div>
+        <div><div class="num"><span class="accent">0</span></div><div class="label">Core dependencies</div></div>
+        <div><div class="num">~140<span class="accent">ns</span></div><div class="label">Route resolution</div></div>
+        <div><div class="num"><span class="accent">18</span></div><div class="label">Optional modules</div></div>
+        <div><div class="num">Java <span class="accent">21+</span></div><div class="label">Virtual threads</div></div>
       </div>
     </div>
   </section>

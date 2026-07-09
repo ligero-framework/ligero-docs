@@ -11,31 +11,30 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      /* Brand colors */
+      /* Brand colors — extracted from logo SVG */
       --navy: #06234f;
-      --navy-light: #0a3a7a;
-      --primary: #1e5fd6;
-      --primary-hover: #1a4fb8;
-      --primary-light: #6f99e6;
+      --blue: #2563eb;
+      --blue-hover: #1d4ed8;
+      --gray: #676767;
       --sky: #93b2e8;
-      --accent: #7C3AED;
+      --cream: #fcfbfa;
       --success: #059669;
       --warning: #D97706;
       --danger: #DC2626;
 
       /* Surfaces */
       --bg: #ffffff;
-      --bg-subtle: #f8fafd;
-      --bg-muted: #f1f5f9;
+      --bg-subtle: var(--cream);
+      --bg-muted: #f0f0f0;
       --surface: #ffffff;
-      --surface-hover: #f8fafd;
-      --border: #e2e8f0;
-      --border-hover: #cbd5e1;
+      --surface-hover: var(--cream);
+      --border: #d4d4d4;
+      --border-hover: #bbb;
 
       /* Text */
-      --text: #0f172a;
-      --text-secondary: #475569;
-      --text-muted: #94a3b8;
+      --text: var(--navy);
+      --text-secondary: var(--gray);
+      --text-muted: #999;
       --text-inverse: #ffffff;
 
       /* Shadows */
@@ -47,14 +46,14 @@
     [data-theme="dark"] {
       --bg: #0a0f1a;
       --bg-subtle: #0f172a;
-      --bg-muted: #1e293b;
+      --bg-muted: #1a2332;
       --surface: #1a2332;
       --surface-hover: #1e293b;
       --border: #1e293b;
       --border-hover: #334155;
-      --text: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
+      --text: #fcfbfa;
+      --text-secondary: #93b2e8;
+      --text-muted: #676767;
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
       --shadow: 0 4px 16px rgba(0,0,0,0.3);
       --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
@@ -140,10 +139,10 @@
       font-family: inherit;
       transition: all 0.2s ease;
     }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; box-shadow: 0 4px 16px rgba(30,95,214,0.2); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(30,95,214,0.3); }
+    .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 4px 16px rgba(37,99,235,0.2); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(37,99,235,0.3); }
     .btn-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
-    .btn-secondary:hover { border-color: var(--primary); background: var(--surface-hover); }
+    .btn-secondary:hover { border-color: var(--blue); background: var(--surface-hover); }
     .btn-ghost { background: transparent; color: var(--text-secondary); }
     .btn-ghost:hover { color: var(--text); background: var(--bg-subtle); }
     .btn-danger { background: var(--danger); color: #fff; }

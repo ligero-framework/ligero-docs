@@ -3,8 +3,8 @@
 const config = {
   title: 'Ligero Framework',
   tagline: 'A lightweight Java web framework for modern applications',
-  url: 'https://ligero-framework.github.io',
-  baseUrl: '/ligero-docs/',
+  url: 'https://doc.ligeroframework.com',
+  baseUrl: '/',
   organizationName: 'ligero-framework',
   projectName: 'ligero-docs',
   trailingSlash: false,

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ligero Brand — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* Brand colors */
+      --navy: #06234f;
+      --navy-light: #0a3a7a;
+      --primary: #1e5fd6;
+      --primary-hover: #1a4fb8;
+      --primary-light: #6f99e6;
+      --sky: #93b2e8;
+      --accent: #7C3AED;
+      --success: #059669;
+      --warning: #D97706;
+      --danger: #DC2626;
+
+      /* Surfaces */
+      --bg: #ffffff;
+      --bg-subtle: #f8fafd;
+      --bg-muted: #f1f5f9;
+      --surface: #ffffff;
+      --surface-hover: #f8fafd;
+      --border: #e2e8f0;
+      --border-hover: #cbd5e1;
+
+      /* Text */
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --text-inverse: #ffffff;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow: 0 4px 16px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0a0f1a;
+      --bg-subtle: #0f172a;
+      --bg-muted: #1e293b;
+      --surface: #1a2332;
+      --surface-hover: #1e293b;
+      --border: #1e293b;
+      --border-hover: #334155;
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+      --shadow: 0 4px 16px rgba(0,0,0,0.3);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── HEADER ─── */
+    header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 48px;
+    }
+    header h1 { font-size: 20px; font-weight: 800; color: var(--navy); }
+    [data-theme="dark"] header h1 { color: var(--primary-light); }
+
+    .theme-toggle {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    }
+    .theme-toggle .switch {
+      width: 44px; height: 24px; background: var(--border);
+      border-radius: 12px; cursor: pointer; position: relative;
+      transition: background 0.3s;
+      border: none; padding: 0;
+    }
+    .theme-toggle .switch::after {
+      content: '';
+      position: absolute; top: 2px; left: 2px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #fff; transition: transform 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    [data-theme="dark"] .theme-toggle .switch { background: var(--primary); }
+    [data-theme="dark"] .theme-toggle .switch::after { transform: translateX(20px); }
+
+    /* ─── SECTIONS ─── */
+    section { margin-bottom: 56px; }
+    h2 {
+      font-size: 14px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--text-muted);
+      margin-bottom: 24px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ─── COLORS ─── */
+    .colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+    .color-swatch { border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+    .color-swatch .preview { height: 64px; }
+    .color-swatch .info { padding: 8px 10px; }
+    .color-swatch .info strong { font-size: 12px; display: block; }
+    .color-swatch .info span { font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+    /* ─── TYPOGRAPHY ─── */
+    .type-scale { display: flex; flex-direction: column; gap: 8px; }
+    .type-scale .item { padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); }
+    .type-scale .item .label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .type-scale .item.h1 { font-size: 40px; font-weight: 900; letter-spacing: -1.5px; }
+    .type-scale .item.h2 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+    .type-scale .item.h3 { font-size: 24px; font-weight: 700; }
+    .type-scale .item.h4 { font-size: 20px; font-weight: 600; }
+    .type-scale .item.body { font-size: 16px; }
+    .type-scale .item.small { font-size: 14px; }
+    .type-scale .item.mono { font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+    .font-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .font-card { padding: 20px; border: 1px solid var(--border); border-radius: 10px; }
+    .font-card .name { font-size: 14px; font-weight: 700; }
+    .font-card .meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── BUTTONS ─── */
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; box-shadow: 0 4px 16px rgba(30,95,214,0.2); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(30,95,214,0.3); }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--primary); background: var(--surface-hover); }
+    .btn-ghost { background: transparent; color: var(--text-secondary); }
+    .btn-ghost:hover { color: var(--text); background: var(--bg-subtle); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { opacity: 0.9; transform: translateY(-2px); }
+    .btn-sm { padding: 6px 16px; font-size: 13px; border-radius: 8px; }
+    .btn-lg { padding: 14px 36px; font-size: 16px; border-radius: 12px; }
+    .btn-block { width: 100%; justify-content: center; }
+
+    /* ─── FORMS ─── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+    .field .hint { font-size: 12px; color: var(--text-muted); }
+    .field input, .field select, .field textarea {
+      font-family: 'Inter', sans-serif;
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      color: var(--text); font-size: 14px; transition: all 0.2s;
+      outline: none; width: 100%;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,95,214,0.1);
+    }
+    .field input.error { border-color: var(--danger); }
+    .field input.error:focus { box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
+    .field .error-msg { font-size: 12px; color: var(--danger); }
+    .field textarea { min-height: 80px; resize: vertical; }
+
+    .check-group { display: flex; flex-direction: column; gap: 10px; }
+    .check-group label { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
+    .check-group input[type="checkbox"],
+    .check-group input[type="radio"] {
+      width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer;
+    }
+
+    /* ─── CARDS ─── */
+    .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .card {
+      padding: 24px; border: 1px solid var(--border); border-radius: 14px;
+      background: var(--surface); transition: all 0.25s;
+    }
+    .card:hover { box-shadow: var(--shadow); }
+    .card .tag {
+      display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--primary); margin-bottom: 8px;
+    }
+    .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ─── BADGES ─── */
+    .badge-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+    }
+    .badge-default { background: var(--bg-muted); color: var(--text-secondary); }
+    .badge-primary { background: rgba(30,95,214,0.1); color: var(--primary); }
+    .badge-success { background: rgba(5,150,105,0.1); color: var(--success); }
+    .badge-warning { background: rgba(217,119,6,0.1); color: var(--warning); }
+    .badge-danger { background: rgba(220,38,38,0.1); color: var(--danger); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 12px; }
+      .font-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Ligero Brand &middot; Design System</h1>
+      <div class="theme-toggle">
+        <span>Light</span>
+        <button class="switch" id="themeSwitch"></button>
+        <span>Dark</span>
+      </div>
+    </header>
+
+    <!-- COLORS -->
+    <section>
+      <h2>Colors</h2>
+      <div class="colors">
+        <div class="color-swatch"><div class="preview" style="background:#06234f"></div><div class="info"><strong>Navy</strong><span>#06234f</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#0a3a7a"></div><div class="info"><strong>Navy Light</strong><span>#0a3a7a</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#1e5fd6"></div><div class="info"><strong>Primary</strong><span>#1e5fd6</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#1a4fb8"></div><div class="info"><strong>Primary Hover</strong><span>#1a4fb8</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#6f99e6"></div><div class="info"><strong>Primary Light</strong><span>#6f99e6</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#93b2e8"></div><div class="info"><strong>Sky</strong><span>#93b2e8</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#7C3AED"></div><div class="info"><strong>Accent</strong><span>#7C3AED</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#059669"></div><div class="info"><strong>Success</strong><span>#059669</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#D97706"></div><div class="info"><strong>Warning</strong><span>#D97706</span></div></div>
+        <div class="color-swatch"><div class="preview" style="background:#DC2626"></div><div class="info"><strong>Danger</strong><span>#DC2626</span></div></div>
+      </div>
+    </section>
+
+    <!-- TYPOGRAPHY -->
+    <section>
+      <h2>Typography</h2>
+      <div class="type-scale">
+        <div class="item h1"><div class="label">H1 / Display</div>Build lightweight apps</div>
+        <div class="item h2"><div class="label">H2 / Heading</div>Build lightweight apps</div>
+        <div class="item h3"><div class="label">H3 / Subheading</div>Build lightweight apps</div>
+        <div class="item h4"><div class="label">H4 / Title</div>Build lightweight apps</div>
+        <div class="item body"><div class="label">Body</div>The quick brown fox jumps over the lazy dog. 0123456789</div>
+        <div class="item small"><div class="label">Small / Caption</div>The quick brown fox jumps over the lazy dog. 0123456789</div>
+        <div class="item mono"><div class="label">Code / Mono</div>import com.ligero.Ligero;  const result = await fetch();</div>
+      </div>
+      <div class="font-grid">
+        <div class="font-card">
+          <div class="name" style="font-family:'Inter',sans-serif;font-weight:900;">Inter Black 900</div>
+          <div class="meta">Headings &middot; Display</div>
+        </div>
+        <div class="font-card">
+          <div class="name" style="font-family:'Inter',sans-serif;font-weight:700;">Inter Bold 700</div>
+          <div class="meta">Subheadings &middot; Buttons</div>
+        </div>
+        <div class="font-card">
+          <div class="name" style="font-family:'Inter',sans-serif;font-weight:600;">Inter Semibold 600</div>
+          <div class="meta">Labels &middot; Navigation</div>
+        </div>
+        <div class="font-card">
+          <div class="name" style="font-family:'Inter',sans-serif;font-weight:400;">Inter Regular 400</div>
+          <div class="meta">Body text &middot; Paragraphs</div>
+        </div>
+        <div class="font-card">
+          <div class="name" style="font-family:'JetBrains Mono',monospace;font-weight:500;">JetBrains Mono 500</div>
+          <div class="meta">Code &middot; Inline code</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUTTONS -->
+    <section>
+      <h2>Buttons</h2>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="btn-row">
+          <button class="btn btn-primary">Primary</button>
+          <button class="btn btn-secondary">Secondary</button>
+          <button class="btn btn-ghost">Ghost</button>
+          <button class="btn btn-danger">Danger</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary btn-sm">Small</button>
+          <button class="btn btn-secondary btn-sm">Small</button>
+          <button class="btn btn-primary btn-lg">Large</button>
+          <button class="btn btn-secondary btn-lg">Large</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" style="max-width:320px;width:100%;justify-content:center;">Full-width</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORM ELEMENTS -->
+    <section>
+      <h2>Form Elements</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input type="text" id="name" placeholder="Jane Doe">
+          <span class="hint">Enter your full legal name</span>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="jane@example.com">
+        </div>
+        <div class="field">
+          <label for="pw">Password</label>
+          <input type="password" id="pw" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;">
+        </div>
+        <div class="field">
+          <label for="role">Role</label>
+          <select id="role">
+            <option>Select a role</option>
+            <option>Developer</option>
+            <option>Designer</option>
+            <option>Admin</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="bio">Bio</label>
+          <textarea id="bio" placeholder="Tell us about yourself&hellip;"></textarea>
+        </div>
+        <div class="field">
+          <label for="err">With error</label>
+          <input type="text" id="err" class="error" value="wrong input">
+          <span class="error-msg">This field has an error</span>
+        </div>
+        <div class="check-group">
+          <label><input type="checkbox"> Remember me</label>
+          <label><input type="checkbox"> Subscribe to newsletter</label>
+          <label><input type="checkbox" checked> Accept terms</label>
+        </div>
+        <div class="check-group">
+          <label><input type="radio" name="radio"> Option A</label>
+          <label><input type="radio" name="radio" checked> Option B</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section>
+      <h2>Cards</h2>
+      <div class="card-row">
+        <div class="card">
+          <div class="tag">Starter</div>
+          <h3>Getting Started</h3>
+          <p>A quick guide to set up your first Ligero application and start building.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Guide</div>
+          <h3>REST API</h3>
+          <p>Build a complete RESTful API with routes, validation, and error handling.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Reference</div>
+          <h3>Core API</h3>
+          <p>Complete reference for the Ligero framework API, SPIs, and extension points.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section>
+      <h2>Badges</h2>
+      <div class="badge-row">
+        <span class="badge badge-default">Default</span>
+        <span class="badge badge-primary">Primary</span>
+        <span class="badge badge-success">Success</span>
+        <span class="badge badge-warning">Warning</span>
+        <span class="badge badge-danger">Danger</span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('themeSwitch');
+    toggle.addEventListener('click', () => {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', current === 'dark' ? '' : 'dark');
+    });
+  </script>
+</body>
+</html>

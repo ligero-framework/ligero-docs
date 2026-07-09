@@ -75,10 +75,13 @@ Everything below is optional — add the module, or don't.
 | **DI** | `ligero-core` (`Beans`) · `ligero-processor` | explicit lambda wiring, or generate it at compile time |
 | **Modules** | `ligero-core` (`LigeroModule`) | feature slices, wiring out of the startup class |
 | **Devtools** | `ligero-devtools` | `/ligero/dev` — bean graph + live per-request traces |
-| **Data** | `ligero-jpa` | thin JPA/Hibernate helper (bring your own provider) |
+| **Data** | `ligero-jdbc` · `ligero-jpa` · `ligero-migrations` | SQL → records (no ORM), a thin JPA/Hibernate helper, and Flyway migrations at startup |
+| **Validation** | `ligero-validation` | annotation-based request validation → automatic 400 |
 | **Config** | `ligero-config-yaml` | `ligero.yml` + profiles, `${ENV:-default}` |
 | **Scale-out** | `ligero-redis` | distributed rate-limit + session stores |
 | **Also** | auth · JSON · templates (×3) · OpenAPI · metrics · OTel tracing | JWT/CSRF/sessions, Jackson, Mustache/FreeMarker/Pebble, … |
+
+See the full list on the [Modules reference](reference/modules).
 
 ## When to use Ligero
 

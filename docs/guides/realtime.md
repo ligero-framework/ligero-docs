@@ -30,7 +30,7 @@ The WebSocket **API lives in core** (`WsHandler`, `WsSession`); the
 startup with a clear message if WebSocket routes exist.
 
 ```groovy
-runtimeOnly 'com.ligero:ligero-server-jetty:0.2.0-SNAPSHOT' // instead of ligero-server-jdk
+runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.5.0' // instead of ligero-server-jdk
 ```
 
 ```java

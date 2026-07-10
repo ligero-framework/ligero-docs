@@ -18,11 +18,11 @@ All three auto-escape HTML and are discovered via `ServiceLoader` — add the
 dependency and `ctx.render(...)` just works:
 
 ```groovy
-runtimeOnly 'com.ligero:ligero-template-mustache:0.2.0-SNAPSHOT'
+runtimeOnly 'com.ligeroframework:ligero-template-mustache:0.5.0'
 // or
-runtimeOnly 'com.ligero:ligero-template-freemarker:0.2.0-SNAPSHOT'
+runtimeOnly 'com.ligeroframework:ligero-template-freemarker:0.5.0'
 // or
-runtimeOnly 'com.ligero:ligero-template-pebble:0.2.0-SNAPSHOT'
+runtimeOnly 'com.ligeroframework:ligero-template-pebble:0.5.0'
 ```
 
 Put templates on the classpath under `templates/`:

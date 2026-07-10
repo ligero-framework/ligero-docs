@@ -167,7 +167,7 @@ Turn it on with one dependency:
 
 ```groovy
 // build.gradle
-annotationProcessor 'com.ligero:ligero-processor:0.2.0-SNAPSHOT'
+annotationProcessor 'com.ligeroframework:ligero-processor:0.5.0'
 ```
 
 Then you just annotate — no module, no `bind(...)`:

@@ -21,9 +21,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.ligero:ligero-core:0.2.0-SNAPSHOT'       // the API
-    runtimeOnly    'com.ligero:ligero-server-jdk:0.2.0-SNAPSHOT' // a server engine
-    runtimeOnly    'com.ligero:ligero-json:0.2.0-SNAPSHOT'       // JSON support
+    implementation 'com.ligeroframework:ligero-core:0.5.0'       // the API
+    runtimeOnly    'com.ligeroframework:ligero-server-jdk:0.5.0' // a server engine
+    runtimeOnly    'com.ligeroframework:ligero-json:0.5.0'       // JSON support
     runtimeOnly    'org.slf4j:slf4j-simple:2.0.16'               // any SLF4J binding
 }
 ```
@@ -32,19 +32,19 @@ dependencies {
 
 ```xml
 <dependency>
-  <groupId>com.ligero</groupId>
+  <groupId>com.ligeroframework</groupId>
   <artifactId>ligero-core</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.5.0</version>
 </dependency>
 <dependency>
-  <groupId>com.ligero</groupId>
+  <groupId>com.ligeroframework</groupId>
   <artifactId>ligero-server-jdk</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.5.0</version>
 </dependency>
 <dependency>
-  <groupId>com.ligero</groupId>
+  <groupId>com.ligeroframework</groupId>
   <artifactId>ligero-json</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 

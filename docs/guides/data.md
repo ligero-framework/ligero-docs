@@ -51,7 +51,7 @@ statements, result-set loops, transactions — off your hands. Rows map to your
 records via a `RowMapper`.
 
 ```groovy
-implementation 'com.ligero:ligero-jdbc:0.2.0-SNAPSHOT'
+implementation 'com.ligeroframework:ligero-jdbc:0.5.0'
 ```
 
 ```java
@@ -81,7 +81,7 @@ predictable layer you can read in one file.
 open-session-in-view, no thread-locals, no proxies you didn't ask for.
 
 ```groovy
-implementation 'com.ligero:ligero-jpa:0.2.0-SNAPSHOT'
+implementation 'com.ligeroframework:ligero-jpa:0.5.0'
 // bring your own provider + driver:
 runtimeOnly 'org.hibernate.orm:hibernate-core:6.6.4.Final'
 runtimeOnly 'com.h2database:h2:2.3.232'
@@ -143,7 +143,7 @@ Keep your schema in versioned SQL and apply it on boot with one call, powered
 by Flyway.
 
 ```groovy
-implementation 'com.ligero:ligero-migrations:0.2.0-SNAPSHOT'
+implementation 'com.ligeroframework:ligero-migrations:0.5.0'
 ```
 
 Put scripts under `src/main/resources/db/migration`:

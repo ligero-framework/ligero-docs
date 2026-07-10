@@ -11,7 +11,7 @@ arguments, return values and timing per call.
 
 ```groovy
 // build.gradle — development only, never ship it
-implementation 'com.ligero:ligero-devtools:0.2.0-SNAPSHOT'
+implementation 'com.ligeroframework:ligero-devtools:0.5.0'
 ```
 
 ```java

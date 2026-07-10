@@ -10,7 +10,7 @@ sidebar_position: 11
 HTTP:
 
 ```groovy
-testImplementation 'com.ligero:ligero-test:0.2.0-SNAPSHOT'
+testImplementation 'com.ligeroframework:ligero-test:0.5.0'
 ```
 
 ```java

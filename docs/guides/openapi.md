@@ -8,7 +8,7 @@ sidebar_position: 10
 registered** — no annotations:
 
 ```groovy
-implementation 'com.ligero:ligero-openapi:0.2.0-SNAPSHOT'
+implementation 'com.ligeroframework:ligero-openapi:0.5.0'
 ```
 
 ```java

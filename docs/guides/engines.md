@@ -10,10 +10,10 @@ swap, zero code changes:
 
 ```groovy
 // default: JDK built-in server on virtual threads
-runtimeOnly 'com.ligero:ligero-server-jdk:0.2.0-SNAPSHOT'
+runtimeOnly 'com.ligeroframework:ligero-server-jdk:0.5.0'
 
 // or: Jetty 12 (adds WebSocket support)
-runtimeOnly 'com.ligero:ligero-server-jetty:0.2.0-SNAPSHOT'
+runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.5.0'
 ```
 
 | | `ligero-server-jdk` | `ligero-server-jetty` |

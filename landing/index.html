@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ligero — Lightweight Java Web Framework</title>
+  <meta name="description" content="A lightweight Java web framework for modern applications.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #ffffff;
+      color: #06234f;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+      position: relative;
+    }
+    .hero .glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(37,99,235,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero .whale-wrap { margin-bottom: 20px; }
+    .hero .whale-wrap img { width: 340px; height: auto; display: block; }
+    .hero h1 {
+      font-size: clamp(48px, 7vw, 72px);
+      font-weight: 900;
+      color: #06234f;
+      letter-spacing: -2.5px;
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .hero h1 .accent { color: #2563eb; }
+    .hero p {
+      font-size: 20px;
+      color: #676767;
+      max-width: 540px;
+      margin-bottom: 32px;
+    }
+    .hero .links { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .hero .links a {
+      text-decoration: none;
+      font-size: 17px; font-weight: 600;
+      padding: 14px 36px;
+      border-radius: 12px;
+      transition: all 0.25s;
+    }
+    .hero .links a.primary {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 4px 24px rgba(37,99,235,0.2);
+    }
+    .hero .links a.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(37,99,235,0.3);
+    }
+    .hero .links a.ghost {
+      color: #06234f;
+      border: 1.5px solid #d4d4d4;
+    }
+    .hero .links a.ghost:hover {
+      border-color: #2563eb;
+      background: rgba(37,99,235,0.04);
+    }
+
+    .code-block {
+      margin-top: 48px;
+      width: 100%;
+      max-width: 620px;
+      background: #06234f;
+      border-radius: 16px;
+      overflow: hidden;
+      text-align: left;
+    }
+    .code-block .bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .code-block .bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-block .bar .dot:nth-child(1) { background: #FF5F56; }
+    .code-block .bar .dot:nth-child(2) { background: #FFBD2E; }
+    .code-block .bar .dot:nth-child(3) { background: #27C93F; }
+    .code-block .bar span { color: #93b2e8; font-size: 13px; font-family: 'JetBrains Mono', monospace; margin-left: 12px; }
+    .code-block pre {
+      padding: 24px 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; line-height: 2;
+      overflow-x: auto;
+      color: #ffffff;
+    }
+    .code-block pre .kw { color: #93b2e8; }
+    .code-block pre .fn { color: #34d399; }
+    .code-block pre .str { color: #fb7185; }
+    .code-block pre .nu { color: #fbbf24; }
+    .code-block pre .tp { color: #60a5fa; }
+    .code-block pre .cm { color: #676767; }
+
+    section { padding: 100px 0; }
+    h2 {
+      font-size: 36px; font-weight: 900;
+      color: #06234f; letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+    h2 + p {
+      font-size: 17px; color: #676767;
+      margin-bottom: 48px; max-width: 480px;
+    }
+
+    #features { background: #fcfbfa; }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .feature {
+      padding: 32px;
+      background: #ffffff;
+      border: 1px solid #d4d4d4;
+      border-radius: 16px;
+      transition: all 0.25s;
+    }
+    .feature:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(6,35,79,0.06);
+      border-color: #93b2e8;
+    }
+    .feature .icon { font-size: 28px; margin-bottom: 16px; }
+    .feature h3 { font-size: 19px; font-weight: 700; color: #06234f; margin-bottom: 6px; }
+    .feature p { font-size: 15px; color: #676767; line-height: 1.7; }
+
+    #modules { background: #06234f; }
+    #modules h2 { color: #ffffff; }
+    #modules h2 + p { color: #93b2e8; }
+    .modules {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .modules span {
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #93b2e8;
+      transition: all 0.2s;
+    }
+    .modules span:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.15);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+    .modules span em { color: #93b2e8; font-style: normal; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px; text-align: center;
+    }
+    .stats .num {
+      font-size: 56px; font-weight: 900;
+      color: #06234f;
+    }
+    .stats .num .accent { color: #2563eb; }
+    .stats .label { font-size: 16px; color: #676767; margin-top: 4px; }
+
+    .cta {
+      text-align: center;
+      padding: 120px 32px;
+      position: relative;
+    }
+    .cta::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse, rgba(37,99,235,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta h2 { font-size: 44px; letter-spacing: -2px; }
+    .cta p { max-width: 440px; margin: 0 auto 32px; }
+    .cta .links { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .cta .links a {
+      text-decoration: none;
+      font-size: 17px; font-weight: 600;
+      padding: 14px 36px;
+      border-radius: 12px;
+      transition: all 0.25s;
+    }
+    .cta .links a.primary {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 4px 24px rgba(37,99,235,0.2);
+    }
+    .cta .links a.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(37,99,235,0.3);
+    }
+    .cta .links a.ghost {
+      color: #06234f;
+      border: 1.5px solid #d4d4d4;
+    }
+    .cta .links a.ghost:hover {
+      border-color: #2563eb;
+    }
+
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid #d4d4d4;
+      text-align: center;
+    }
+    footer p { color: #676767; font-size: 14px; }
+    footer a { color: #676767; text-decoration: none; }
+    footer a:hover { color: #2563eb; }
+
+    @media (max-width: 768px) {
+      .hero .whale-wrap img { width: 220px; }
+      .hero h1 { font-size: 36px; }
+      .features { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      section { padding: 60px 0; }
+      h2 { font-size: 28px; }
+    }
+    @media (max-width: 480px) {
+      .hero .whale-wrap img { width: 160px; }
+      .stats { grid-template-columns: 1fr; }
+      .hero .links, .cta .links { flex-direction: column; align-items: center; }
+      .hero .links a, .cta .links a { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="glow"></div>
+    <div class="whale-wrap">
+      <img src="../static/img/Ligero.svg" alt="Ligero">
+    </div>
+    <h1>Build web apps<br>that weigh <span class="accent">nothing</span></h1>
+    <p>Ligero is a Java web framework with zero core dependencies, virtual threads, and an API that gets out of your way.</p>
+    <div class="links">
+      <a href="https://doc.ligeroframework.com" class="primary">Get Started</a>
+      <a href="https://github.com/ligero-framework/ligero" class="ghost">GitHub</a>
+    </div>
+    <div class="code-block">
+      <div class="bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span>App.java</span>
+      </div>
+      <pre><span class="kw">import</span> com.ligero.Ligero;
+
+<span class="kw">public class</span> <span class="tp">App</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        <span class="tp">Ligero</span> app = <span class="tp">Ligero</span>.<span class="fn">create</span>(<span class="nu">8080</span>);
+        app.<span class="fn">get</span>(<span class="str">"/hello/{name}"</span>, ctx ->
+            ctx.<span class="fn">json</span>(Map.<span class="fn">of</span>(<span class="str">"message"</span>, <span class="str">"Hello, "</span> + ctx.<span class="fn">pathParam</span>(<span class="str">"name"</span>) + <span class="str">"!"</span>)));
+        app.<span class="fn">start</span>();
+    }
+}</pre>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="container">
+      <h2>Designed to be lightweight</h2>
+      <p>Every feature is optional. Every default is secure. Every abstraction is leak-proof.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="icon">&#x26a1;</div>
+          <h3>Fast by nature</h3>
+          <p>Zero core dependencies. Java 21 virtual threads. Trie-router resolves in ~140ns even with 300+ routes.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">&#x1f4dd;</div>
+          <h3>Simple API</h3>
+          <p>Express-inspired handlers. Composable middleware. Error handling without ceremony or boilerplate.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">&#x1f6e1;&#xfe0f;</div>
+          <h3>Secure out the box</h3>
+          <p>OWASP security headers, request hygiene, CSRF protection. Production-ready from your first route.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">&#x1f9f0;</div>
+          <h3>Pluggable SPIs</h3>
+          <p>Engines, JSON, templates, tracing — all via ServiceLoader. Swap implementations without touching your code.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">&#x1f504;</div>
+          <h3>Real-time capable</h3>
+          <p>SSE in core. WebSockets via Jetty. Reactive features without the reactive complexity.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">&#x1f4ca;</div>
+          <h3>Observable by design</h3>
+          <p>Micrometer metrics, OpenTelemetry tracing, structured logs, and a live devtools dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="modules">
+    <div class="container">
+      <h2>Modular ecosystem</h2>
+      <p>Add what you need. Leave the rest.</p>
+      <div class="modules">
+        <span><em>core</em> — API, router, DI</span>
+        <span><em>server-jdk</em> — JDK engine</span>
+        <span><em>server-jetty</em> — HTTP/2, WebSocket</span>
+        <span><em>json</em> — Jackson mapper</span>
+        <span><em>auth</em> — JWT, CSRF, sessions</span>
+        <span><em>openapi</em> — OpenAPI 3, Swagger</span>
+        <span><em>jdbc</em> — SQL helper</span>
+        <span><em>jpa</em> — JPA/Hibernate</span>
+        <span><em>redis</em> — Rate-limit, sessions</span>
+        <span><em>otel</em> — OpenTelemetry</span>
+        <span><em>validation</em> — Bean Validation</span>
+        <span><em>migrations</em> — Flyway</span>
+        <span><em>config-yaml</em> — YAML + profiles</span>
+        <span><em>templates</em> — Mustache, FreeMarker, Pebble</span>
+        <span><em>metrics</em> — Micrometer</span>
+        <span><em>devtools</em> — Debug dashboard</span>
+        <span><em>test</em> — E2E testing</span>
+        <span><em>processor</em> — Compile-time DI</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="stats">
+        <div><div class="num"><span class="accent">0</span></div><div class="label">Core dependencies</div></div>
+        <div><div class="num">~140<span class="accent">ns</span></div><div class="label">Route resolution</div></div>
+        <div><div class="num"><span class="accent">18</span></div><div class="label">Optional modules</div></div>
+        <div><div class="num">Java <span class="accent">21+</span></div><div class="label">Virtual threads</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <h2>Your code. No baggage.</h2>
+    <p>No XML config. No heavyweight containers. No magic. Just modern Java, the way it should be.</p>
+    <div class="links">
+      <a href="https://doc.ligeroframework.com" class="primary">Read the docs</a>
+      <a href="https://github.com/ligero-framework/ligero" class="ghost">Explore on GitHub</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>
+        <a href="https://ligeroframework.com">ligeroframework.com</a>
+        &middot; <a href="https://doc.ligeroframework.com">Docs</a>
+        &middot; <a href="https://github.com/ligero-framework">GitHub</a>
+        &middot; Apache 2.0
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

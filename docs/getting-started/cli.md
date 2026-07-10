@@ -7,6 +7,31 @@ sidebar_position: 3
 [`ligero-cli`](https://github.com/ligero-framework/ligero-cli) scaffolds
 ready-to-run projects — including Docker packaging and an optional database.
 
+## Install
+
+The CLI ships as a **native binary** (built with GraalVM) — no JVM required,
+near-instant startup.
+
+**macOS / Linux:**
+
+```bash
+curl -fsSL https://github.com/ligero-framework/ligero-cli/releases/latest/download/install.sh | sh
+```
+
+**Windows** (PowerShell):
+
+```powershell
+irm https://github.com/ligero-framework/ligero-cli/releases/latest/download/install.ps1 | iex
+```
+
+Both download the binary for your OS into `~/.ligero/bin` and add it to your
+`PATH`. Open a new terminal and check it with `ligero version`. You can also
+grab the binary (or the JVM `ligero-<version>.zip`) directly from the
+[latest release](https://github.com/ligero-framework/ligero-cli/releases/latest),
+or — once available — `sdk install ligero` via [SDKMAN!](https://sdkman.io).
+
+## Scaffold a project
+
 ```bash
 ligero new my-api --package com.acme.api            # modular app
 ligero new my-api --db postgres                     # + PostgreSQL via Docker Compose

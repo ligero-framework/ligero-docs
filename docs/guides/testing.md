@@ -10,7 +10,7 @@ sidebar_position: 11
 HTTP:
 
 ```groovy
-testImplementation 'com.ligeroframework:ligero-test:0.5.0'
+testImplementation "com.ligeroframework:ligero-test:$ligeroVersion"
 ```
 
 ```java
@@ -52,3 +52,26 @@ engine.root.handle(fakeRequest, fakeResponse);  // drive it directly
 ```
 
 This is exactly how the framework tests itself (158 tests, both styles).
+
+## What `ligero new` gives you
+
+Every scaffolded project ships a ready **`ApplicationTest`** that boots the app
+with `ligero-test` and hits a route — a working example to copy for your own
+features, and a green baseline from the first commit. Repositories and services
+are bound **as interfaces**, so a test can swap the repository for an in-memory
+fake without touching the rest of the wiring.
+
+While you write tests, keep [devtools](./devtools.md) open at `/ligero/dev`: the
+bean graph and per-request traces make it obvious which layer a failing call
+stops in.
+
+## Shared test helpers
+
+`ligero-test` **is** the shared-helpers story — a normal, versioned, documented
+dependency (`testImplementation "com.ligeroframework:ligero-test:$ligeroVersion"`),
+not a special build coordinate. There is intentionally **no Gradle
+`testFixtures` variant** to consume: one obvious path keeps the POM small and
+avoids two ways to pull in the same helpers. If you need helpers shared across
+*your own* modules, put them in an ordinary test-support module (or your own
+`testFixtures`) — that's an app-level choice, not something the framework
+imposes.

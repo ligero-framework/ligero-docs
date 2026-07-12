@@ -37,8 +37,27 @@ ligero new my-api --package com.acme.api            # modular app
 ligero new my-api --db postgres                     # + PostgreSQL via Docker Compose
 ligero new my-api --db h2                            # + in-memory H2 (nothing to install)
 ligero new my-api --wiring processor                # annotate-only DI (compile-time generated)
+ligero new my-api --devtools false                  # skip the devtools workbench
 ligero generate resource Order                       # a whole CRUD slice (module + layers), wired
 ```
+
+## DevTools: on by default
+
+New projects include the [devtools workbench](../guides/devtools.md) — the bean
+graph and live per-request traces at **`/ligero/dev`** — out of the box. `ligero
+new` adds the `ligero-devtools` dependency and mounts it in `Application`, so you
+get the visual debugger the moment you `gradle run`.
+
+Opt out with `--devtools false`:
+
+```bash
+ligero new my-api --devtools false
+```
+
+That drops the `ligero-devtools` dependency and its mount from the generated
+project. Everything else (modules, layers, routes, tests) is identical. You can
+always add it back later by declaring the dependency and mounting it in
+`Application`.
 
 ## Wiring: `--wiring explicit` (default) or `--wiring processor`
 

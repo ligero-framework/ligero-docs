@@ -19,9 +19,17 @@ const sidebars = {
       label: 'HTTP Core',
       items: [
         'guides/routing',
+        'guides/query',
         'guides/context',
         'guides/middleware',
         'guides/error-handling',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'AI & MCP',
+      items: [
+        'guides/mcp',
       ],
     },
     {

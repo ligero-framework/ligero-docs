@@ -1,0 +1,64 @@
+name: Bump Ligero version
+
+# The docs pin the framework version in dependency snippets. When the framework
+# publishes a release it fires a repository_dispatch here; this workflow rewrites
+# every com.ligeroframework:*:<version> coordinate (and any `ligeroVersion = '…'`
+# assignment) under docs/ to the new version and opens a PR, so the copy-paste
+# snippets always match the latest published framework. Also runnable by hand.
+on:
+  repository_dispatch:
+    types: [framework-released]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Framework version to target (without leading v)'
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: v
+        run: |
+          v="${{ github.event.client_payload.version || github.event.inputs.version }}"
+          v="${v#v}"
+          if [[ ! "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version '$v' is not X.Y.Z — skipping the bump."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Rewrite pinned Ligero versions in the docs
+        if: steps.v.outputs.skip != 'true'
+        run: |
+          V="${{ steps.v.outputs.version }}"
+          find docs -type f \( -name '*.md' -o -name '*.mdx' \) -print0 \
+            | xargs -0 sed -i -E \
+              -e "s#(com\.ligeroframework:[a-z-]+:)[0-9]+\.[0-9]+\.[0-9]+#\1${V}#g" \
+              -e "s#(ligeroVersion[[:space:]]*=[[:space:]]*['\"])[0-9]+\.[0-9]+\.[0-9]+#\1${V}#g"
+
+      - name: Open the version-bump PR
+        if: steps.v.outputs.skip != 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.RELEASE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          base: main
+          branch: chore/ligero-${{ steps.v.outputs.version }}
+          delete-branch: true
+          add-paths: docs
+          commit-message: "docs: pin snippets to Ligero ${{ steps.v.outputs.version }}"
+          title: "docs: pin snippets to Ligero ${{ steps.v.outputs.version }}"
+          body: |
+            Automated bump of the pinned framework version in the documentation
+            snippets to `${{ steps.v.outputs.version }}`, triggered by the
+            framework's release.
+          author: Duvan Jamid <duvanjamid.work@gmail.com>
+          committer: Duvan Jamid <duvanjamid.work@gmail.com>

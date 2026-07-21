@@ -30,6 +30,7 @@ const sidebars = {
       items: [
         'guides/dependency-injection',
         'guides/architecture',
+        'guides/events',
         'guides/devtools',
       ],
     },
@@ -62,10 +63,22 @@ const sidebars = {
       label: 'Harden & Ship',
       items: [
         'guides/security',
+        'guides/auth-asymmetric',
         'guides/testing',
         'guides/observability',
         'guides/engines',
         'guides/scaling',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Going to production',
+      items: [
+        'guides/scheduler',
+        'guides/cache',
+        'guides/resilience',
+        'guides/jdbc-pooling',
+        'guides/native-image',
       ],
     },
     {

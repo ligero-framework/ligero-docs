@@ -52,6 +52,28 @@ app.websocket("/chat", new WsHandler() {
 HTTP routes and WebSockets share the same port; non-upgrade requests flow
 through the normal pipeline untouched.
 
+### Origin checks
+
+A browser will open a WebSocket to your app from *any* website, cookies
+included, and CORS does not apply. So by default a handshake is accepted only
+when it has no `Origin` header (a non-browser client) or the origin is the
+app's own host; everything else gets `403`. Trust additional origins by
+overriding `acceptOrigin`:
+
+```java
+app.websocket("/chat", new WsHandler() {
+    @Override public boolean acceptOrigin(String origin, String host) {
+        return "https://app.example.com".equals(origin)
+            || WsHandler.super.acceptOrigin(origin, host);
+    }
+    // ...
+});
+```
+
+The middleware pipeline does not run for WebSocket upgrades, so authenticate
+inside `onConnect` (for example with a short-lived token the page obtained
+over HTTP) and close the session if it fails.
+
 ### Which one do I need?
 
 | | SSE | WebSocket |

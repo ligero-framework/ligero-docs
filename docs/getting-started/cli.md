@@ -24,8 +24,10 @@ curl -fsSL https://github.com/ligero-framework/ligero-cli/releases/latest/downlo
 irm https://github.com/ligero-framework/ligero-cli/releases/latest/download/install.ps1 | iex
 ```
 
-Both download the binary for your OS into `~/.ligero/bin` and add it to your
-`PATH`. Open a new terminal and check it with `ligero version`. You can also
+Both download the binary for your OS, **verify its SHA-256** against the
+checksum published with the release, install it into `~/.ligero/bin` and add
+it to your `PATH`. Set `LIGERO_REQUIRE_CHECKSUM=1` to refuse a release that
+publishes no checksum, or `LIGERO_VERSION=v0.2.0` to pin one. Open a new terminal and check it with `ligero version`. You can also
 grab the binary (or the JVM `ligero-<version>.zip`) directly from the
 [latest release](https://github.com/ligero-framework/ligero-cli/releases/latest),
 or — once available — `sdk install ligero` via [SDKMAN!](https://sdkman.io).
@@ -38,6 +40,7 @@ ligero new my-api --db postgres                     # + PostgreSQL via Docker Co
 ligero new my-api --db h2                            # + in-memory H2 (nothing to install)
 ligero new my-api --wiring processor                # annotate-only DI (compile-time generated)
 ligero new my-api --devtools false                  # skip the devtools workbench
+ligero new my-api --controllers typed               # endpoints as typed, annotated methods
 ligero generate resource Order                       # a whole CRUD slice (module + layers), wired
 ```
 
@@ -58,6 +61,19 @@ That drops the `ligero-devtools` dependency and its mount from the generated
 project. Everything else (modules, layers, routes, tests) is identical. You can
 always add it back later by declaring the dependency and mounting it in
 `Application`.
+
+## Controllers: `--controllers lambda` (default) or `--controllers typed`
+
+- **`lambda`** — controllers register their routes by hand in
+  `register(Ligero app)`: `app.get("/x", ctx -> ...)`.
+- **`typed`** — controllers declare each endpoint as a method with typed
+  parameters and a return type (`@Get("/{id}") Order get(@PathParam long id)`);
+  [`ligero-processor`](../guides/controllers.md) generates the route
+  registrations at compile time. See [Typed controllers](../guides/controllers.md).
+
+`ligero generate` follows the style the project already uses; override it per
+command with `--controllers lambda|typed`. Typed controllers need a Ligero
+release that includes them, which is why `lambda` is still the default.
 
 ## Wiring: `--wiring explicit` (default) or `--wiring processor`
 

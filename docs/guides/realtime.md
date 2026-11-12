@@ -49,6 +49,9 @@ app.websocket("/chat", new WsHandler() {
 });
 ```
 
+The Loom engine (`ligero-server-loom`) supports WebSockets too, with no
+dependencies — see [Server Engines](engines.md#the-loom-engine).
+
 HTTP routes and WebSockets share the same port; non-upgrade requests flow
 through the normal pipeline untouched.
 

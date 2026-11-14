@@ -41,7 +41,11 @@ first HTTP 200.*
   requests/s on this machine with no framework on top at all.
 - **Typed controllers cost nothing.** They run at the same throughput as
   hand-written lambdas, because the routing code is generated at compile time.
-- **The lead depends on the workload.** The Loom engine serves its first 256
+- **The lead depends on the machine.** On the GitHub-hosted runner that
+  checks every pull request the same benchmark measured the Loom engine at
+  1.4× Javalin and 2.6× Spring Boot — still first, by a smaller margin than on
+  the development machine above.
+- **And on the workload.** The Loom engine serves its first 256
   concurrent connections on dedicated threads. With 1 000 busy connections it
   measured 57–110 thousand requests/s against Javalin's 73 thousand.
 

@@ -26,9 +26,12 @@ jobs:
 
       - name: Resolve version
         id: v
+        # The payload is attacker-influenceable text: pass it through the
+        # environment (never substituted into the script) and validate it.
+        env:
+          RAW_VERSION: ${{ github.event.client_payload.version || github.event.inputs.version }}
         run: |
-          v="${{ github.event.client_payload.version || github.event.inputs.version }}"
-          v="${v#v}"
+          v="${RAW_VERSION#v}"
           if [[ ! "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Version '$v' is not X.Y.Z — skipping the bump."
             echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -38,8 +41,9 @@ jobs:
 
       - name: Rewrite pinned Ligero versions in the docs
         if: steps.v.outputs.skip != 'true'
+        env:
+          V: ${{ steps.v.outputs.version }}
         run: |
-          V="${{ steps.v.outputs.version }}"
           find docs -type f \( -name '*.md' -o -name '*.mdx' \) -print0 \
             | xargs -0 sed -i -E \
               -e "s#(com\.ligeroframework:[a-z-]+:)[0-9]+\.[0-9]+\.[0-9]+#\1${V}#g" \

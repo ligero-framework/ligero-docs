@@ -19,6 +19,7 @@ const sidebars = {
       label: 'HTTP Core',
       items: [
         'guides/routing',
+        'guides/controllers',
         'guides/query',
         'guides/context',
         'guides/middleware',

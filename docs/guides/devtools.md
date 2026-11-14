@@ -135,6 +135,23 @@ arrives over SSE); click one to replay its path in the graph.
 | `GET /ligero/dev/api/requests` | last 100 traces, most recent first |
 | `GET /ligero/dev/api/stream` | SSE stream of completed traces |
 
+## Who can open it
+
+The dashboard and its API answer **only to requests from the local machine**
+(loopback). Anyone else gets a `404`, as if the routes did not exist. That
+keeps a dev server bound to `0.0.0.0` from exposing your beans' arguments and
+return values to the rest of the network.
+
+Running the app in a container and browsing from the host? Requests then
+arrive from the container gateway, not from loopback. Opt in on a network you
+trust:
+
+```java
+Devtools.create().allowRemote(true).install(app, beans);
+```
+
+or set `LIGERO_DEVTOOLS_REMOTE=true`.
+
 ## Production
 
 Never install devtools in production — it exposes the arguments and return

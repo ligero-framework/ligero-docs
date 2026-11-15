@@ -23,11 +23,14 @@ runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.5.0'
 |---|---|---|---|
 | HTTP implementation | the JDK's `com.sun.net.httpserver` | Ligero's own | Jetty 12 core |
 | Dependencies | none | none | Jetty |
-| Virtual threads | ✓ | ✓ (plus dedicated threads) | ✓ |
-| gzip | ✓ | ✓ | ✓ (GzipHandler) |
-| WebSockets | ✗ (fails fast with guidance) | ✓ | ✓ |
-| HTTP/2 | ✗ | ✗ | ✓ (h2c) |
-| Throughput (same app, same machine) | 1× | ~4.5× | ~1.2× |
+| HTTPS (TLS) | ✗ | ✓ (TLS 1.3 / 1.2, safe suites only) | ✗ (not wired) |
+| HTTP/2 | ✗ | ✓ (over TLS, and cleartext) | ✓ (cleartext h2c) |
+| WebSockets | ✗ (fails fast with guidance) | ✓ text, binary, compressed | ✓ text, binary |
+| Compression | gzip | gzip + Brotli, also for streams | gzip |
+| Request body streaming | ✗ (buffered) | ✓ | ✗ (buffered) |
+| Slow-client protection | partial | head, body and write deadlines | Jetty's |
+| Per-address connection limit | ✗ | ✓ | ✗ |
+| Throughput (same app, same machine) | 1× | 2–4.5× | ~1.2× |
 
 All engines give the same behavior for routing, errors, body limits,
 redirects and headers.
@@ -61,11 +64,96 @@ is your workload:
 app.engine(new LoomServerEngine(LoomServerEngine.Limits.defaults().withDedicatedThreads(1024)));
 ```
 
-**What it supports.** Keep-alive and pipelining, chunked request bodies,
-streaming responses ([SSE](realtime.md)), `Expect: 100-continue`, `HEAD`,
-gzip, graceful shutdown, and [WebSockets](realtime.md) — handshake with the
-same origin check as the Jetty engine, fragmented messages, ping/pong and
-close codes.
+**What it supports.** HTTP/1.1 with keep-alive and pipelining, **HTTP/2**,
+**HTTPS**, chunked and streamed request bodies, streaming responses
+([SSE](realtime.md)), `Expect: 100-continue`, `HEAD`, gzip and Brotli,
+graceful shutdown, and [WebSockets](realtime.md) — text and binary, with
+`permessage-deflate` compression and the same origin check as the Jetty engine.
+
+### HTTPS
+
+TLS comes from the JDK itself; nothing to add to the build. Point the engine
+at a certificate with two environment variables —
+
+```bash
+LIGERO_TLS_CERT=/etc/letsencrypt/live/example.com/fullchain.pem
+LIGERO_TLS_KEY=/etc/letsencrypt/live/example.com/privkey.pem
+```
+
+— or in code:
+
+```java
+Tls tls = Tls.fromPem(Path.of("fullchain.pem"), Path.of("privkey.pem"));   // or Tls.fromKeyStore(path, password)
+app.engine(new LoomServerEngine(LoomServerEngine.Limits.defaults(), tls));
+```
+
+Only what is considered safe today is negotiated: TLS 1.3 and TLS 1.2, and
+for 1.2 only forward-secret key exchange with authenticated encryption
+(ECDHE + AES-GCM / ChaCha20). The key must be an unencrypted PKCS#8 PEM
+(`-----BEGIN PRIVATE KEY-----`) or live in a PKCS#12 keystore
+(`LIGERO_TLS_KEYSTORE` / `LIGERO_TLS_KEYSTORE_PASSWORD`). Add HSTS with
+[`SecurityHeadersMiddleware`](security.md).
+
+### HTTP/2
+
+With TLS on, browsers and clients negotiate HTTP/2 automatically (ALPN);
+HTTP/1.1 clients keep working on the same port. Without TLS, clients that
+start with the HTTP/2 preface ("prior knowledge", e.g. gRPC-style internal
+traffic or `curl --http2-prior-knowledge`) are served as HTTP/2 too. Your
+handlers do not change: `ctx.req().getProtocol()` says `HTTP/2.0`.
+
+HTTP/2 gives a client many ways to make a server work for nothing, and each
+is bounded:
+
+| Attack | Defence |
+|---|---|
+| Rapid reset (open a stream, cancel it, repeat — CVE-2023-44487) | a cancelled stream keeps its slot until its handler has returned, and resets are rate limited |
+| CONTINUATION flood (a header block that never ends) | header blocks are capped while they are still arriving |
+| PING / SETTINGS / empty-frame floods | control frames are rate limited |
+| HPACK bombs (tiny block, huge header list) | the decoded size is bounded during decoding |
+| Slow or stuck receivers | responses wait for the client's window with a deadline |
+| Unread uploads | the client is only granted more window as the application consumes the body |
+
+Malformed requests — upper-case or connection-specific fields, misplaced
+pseudo-headers, a body that disagrees with `content-length` — are refused
+rather than repaired, which is what keeps HTTP/2 from being used to smuggle
+requests. Concurrent requests per connection default to 100
+(`Limits.withMaxConcurrentStreams`).
+
+### Compression
+
+Switch it on with `gzip(true)` (or `LIGERO_GZIP=true`). Text, JSON, XML,
+JavaScript and SVG are compressed; images, video and archives — already
+compressed — are left alone. Streamed responses are compressed as well, and
+`flush()` still delivers immediately, so Server-Sent Events work compressed.
+
+For **Brotli** — Google's codec, typically 15–25 % smaller than gzip — add one
+dependency; it is preferred whenever the client accepts it and falls back to
+gzip otherwise:
+
+```groovy
+runtimeOnly 'com.ligeroframework:ligero-compress-brotli:0.5.0'
+```
+
+:::caution
+Do not compress responses that mix secrets (CSRF tokens, session data) with
+text an attacker can influence in the same body: the compressed size can leak
+the secret (the BREACH attack). Leave compression off for those routes.
+:::
+
+### Large uploads
+
+`ctx.body(...)` and `ctx.bodyAsBytes()` hold the whole body in memory.
+For big uploads read it as a stream instead — memory stays constant:
+
+```java
+app.put("/files/{name}", ctx -> {
+    try (InputStream in = ctx.bodyStream(500L * 1024 * 1024)) {   // this route allows up to 500 MB
+        Files.copy(in, uploads.resolve(safeName), StandardCopyOption.REPLACE_EXISTING);
+    }
+    ctx.status(204).res().end();
+});
+```
 
 **What it refuses.** A server that guesses at malformed input is how request
 smuggling and resource exhaustion happen, so the engine is strict:
@@ -80,22 +168,30 @@ smuggling and resource exhaustion happen, so the engine is strict:
 | request head over 16 KiB or more than 100 headers | `431` |
 | body over `maxBodyBytes` (declared or chunked) | `413` |
 | a request head that takes more than 10 s to arrive | `408` |
-| more than 20,000 concurrent connections | refused |
+| a client that stops reading a response for 30 s | disconnected |
+| more than 20,000 connections, or 5,000 from one address | refused |
 
 On the way out, header names and values are validated — user input placed in
 a header cannot inject another header or a second response — and the
 `Content-Length` / `Transfer-Encoding` headers always come from the engine.
 
-**What it does not do.** TLS and HTTP/2. Terminate both at your reverse proxy
-or load balancer (the usual production setup), or use the Jetty engine for
-h2c.
+:::tip Behind a reverse proxy
+Every connection then comes from the proxy's address, so raise the
+per-address limit (`Limits.withMaxConnectionsPerAddress`) and install
+[`TrustedProxyMiddleware`](security.md#behind-a-reverse-proxy) so rate limits
+and logs see the real client.
+:::
 
-The limits are configurable through `LoomServerEngine.Limits`.
+**What it does not do.** HTTP/3 (it runs over UDP and is normally provided by
+a CDN), and certificate reloading without a restart.
+
+The limits are configurable through `LoomServerEngine.Limits`, e.g.
+`Limits.defaults().withMaxConnectionsPerAddress(20_000).withWriteTimeout(Duration.ofSeconds(60))`.
 
 ## HTTP/2
 
-The JDK and Loom engines speak **HTTP/1.1 only**. For HTTP/2, use the
-**Jetty engine**:
+The **Loom engine** speaks HTTP/2 itself (see above). The JDK engine is
+HTTP/1.1 only, and the **Jetty engine** offers cleartext HTTP/2:
 it carries an HTTP/1.1 and an HTTP/2 cleartext (**h2c**) connection factory on
 the same port, so h2c-capable clients negotiate HTTP/2 (via upgrade or prior
 knowledge) and HTTP/1.1 clients are unaffected — no code change, just the
@@ -106,7 +202,7 @@ dependency swap above.
 HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 ```
 
-### Why can't the JDK engine do it — and why not write our own HTTP/2?
+### Why can't the JDK engine do it?
 
 A common question: *doesn't "pure Java" support HTTP/2 and WebSockets?* The
 answer splits by **client vs. server**:
@@ -127,26 +223,8 @@ that class's limits. The **Loom engine** and **Jetty** don't use that class;
 they read raw bytes off sockets and implement the protocol themselves, which
 is why both can offer WebSockets.
 
-Could we ship our own HTTP/2 engine module? Technically yes — but HTTP/2 means
-implementing, from raw sockets up:
-
-- **ALPN** negotiation in the TLS handshake (this part the JDK *does* provide, via `SSLEngine` since Java 9),
-- the **binary framing** layer (`HEADERS`/`DATA`/`SETTINGS`/`WINDOW_UPDATE`/… and a per-stream state machine),
-- **stream multiplexing** over one connection,
-- **HPACK** header compression (RFC 7541 — stateful, and a classic source of compression-bomb CVEs),
-- per-stream and per-connection **flow control**.
-
-That's thousands of lines of spec-sensitive, security-critical code with
-perpetual maintenance — a very different size of problem from HTTP/1.1, which
-the Loom engine implements in a few hundred lines. The `ServerEngine` SPI
-exists precisely so we **don't** have to reimplement a production HTTP/2
-stack: use the Loom engine for the HTTP/1.1 fast path, and swap in Jetty's
-battle-tested implementation when you actually need HTTP/2.
-
-> **Virtual threads** would let you write an HTTP/2 server in a blocking,
-> one-virtual-thread-per-stream style instead of a classic NIO event loop — a
-> nice fit for multiplexing — but you'd still have to implement framing, HPACK
-> and flow control. Loom simplifies the concurrency, not the protocol.
+That is why the Loom engine exists: it implements HTTP/1.1, HTTP/2 (framing,
+multiplexing, HPACK, flow control) and WebSockets itself, with no dependency.
 
 ## Writing an engine
 

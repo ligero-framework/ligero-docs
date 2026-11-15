@@ -55,6 +55,23 @@ dependencies — see [Server Engines](engines.md#the-loom-engine).
 HTTP routes and WebSockets share the same port; non-upgrade requests flow
 through the normal pipeline untouched.
 
+### Binary messages and compression
+
+Override `onBinary` to accept binary messages and answer with
+`session.send(byte[])`; a handler that does not override it refuses binary
+messages with close code 1003. On the Loom engine, messages are compressed
+with `permessage-deflate` whenever the client offers it (browsers do) —
+nothing to configure — and a compressed message can never inflate beyond the
+message size limit.
+
+```java
+app.websocket("/upload", new WsHandler() {
+    @Override public void onBinary(WsSession session, byte[] message) {
+        session.send(checksum(message));
+    }
+});
+```
+
 ### Origin checks
 
 A browser will open a WebSocket to your app from *any* website, cookies

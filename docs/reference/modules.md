@@ -8,7 +8,8 @@ sidebar_position: 1
 |---|---|---|
 | `ligero-core` | slf4j-api | API, router, middleware, SPIs, config, validation, SSE, WebSocket API |
 | `ligero-server-jdk` | core | Default engine (`com.sun.net.httpserver`, virtual threads) |
-| `ligero-server-loom` | core | Ligero's own HTTP/1.1 + WebSocket engine (sockets + virtual threads); fastest |
+| `ligero-server-loom` | core | Ligero's own engine: HTTP/1.1, HTTP/2, HTTPS and WebSockets; fastest |
+| `ligero-compress-brotli` | core, brotli4j | Brotli (`br`) response compression for engines supporting the `ContentEncoder` SPI |
 | `ligero-server-jetty` | core, Jetty 12 | Alternative engine; WebSockets and HTTP/2 |
 | `ligero-json` | core, Jackson | `BodyMapper` implementation |
 | `ligero-auth` | core | JWT HS256, CSRF, sessions |

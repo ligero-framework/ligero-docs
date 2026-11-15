@@ -177,16 +177,28 @@ clients), case-insensitive header handling, validated cookie names and values
 short, plain identifier, and the JSON access log escapes everything the
 client controls, so requests cannot forge log records.
 
+## Behind a reverse proxy
+
+Behind nginx, a load balancer or a CDN, every request reaches the application
+from the proxy's address — so a rate limit keyed on `ctx.remoteAddress()` sees
+one "client". The proxy forwards the original address in `X-Forwarded-For`,
+but anyone who can reach the application directly can send that header too.
+`TrustedProxyMiddleware` believes it only from the proxies you list, and reads
+it from the right so a client cannot choose its own address:
+
+```java
+app.use(TrustedProxyMiddleware.of("10.0.0.0/8"));   // first, before anything that uses the address
+app.use(RateLimitMiddleware.of(100, 100));           // now limits real clients
+```
+
 ## Production checklist
 
 - Serve over TLS; enable HSTS and a Content-Security-Policy (above).
 - `SessionMiddleware...secureCookie(true)`, `regenerate` on login,
   `invalidate` on logout.
 - CORS: an explicit origin list, never `*`, for anything authenticated.
-- Behind a reverse proxy every request appears to come from the proxy. Key
-  the rate limiter on the address your proxy forwards — and only trust that
-  header when the proxy sets it:
-  `RateLimitMiddleware.of(100, 100, ctx -> ctx.header("X-Real-IP"))`.
+- Behind a reverse proxy, install `TrustedProxyMiddleware` with your proxies'
+  addresses so rate limits and logs see real clients (see above).
 - Keep [devtools](devtools.md#production) out of the production build.
 - Keep secrets (JWT keys, session secrets, database passwords) in the
   environment (`${DB_PASSWORD}` in `ligero.yml`), never in source control.

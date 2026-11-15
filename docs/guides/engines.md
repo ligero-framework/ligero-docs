@@ -13,13 +13,13 @@ swap, zero code changes:
 runtimeOnly 'com.ligeroframework:ligero-server-jdk:0.5.0'
 
 // or: Ligero's own server — fastest, WebSockets, still zero dependencies
-runtimeOnly 'com.ligeroframework:ligero-server-loom:0.5.0'
+runtimeOnly 'com.ligeroframework:ligero-server-pluma:0.5.0'
 
 // or: Jetty 12 (WebSockets and HTTP/2)
 runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.5.0'
 ```
 
-| | `ligero-server-jdk` | `ligero-server-loom` | `ligero-server-jetty` |
+| | `ligero-server-jdk` | `ligero-server-pluma` | `ligero-server-jetty` |
 |---|---|---|---|
 | HTTP implementation | the JDK's `com.sun.net.httpserver` | Ligero's own | Jetty 12 core |
 | Dependencies | none | none | Jetty |
@@ -35,13 +35,13 @@ runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.5.0'
 All engines give the same behavior for routing, errors, body limits,
 redirects and headers.
 
-## The Loom engine
+## The Pluma engine
 
 :::info Availability
-`ligero-server-loom` ships in the release after 0.7.0.
+`ligero-server-pluma` ships in the release after 0.7.0.
 :::
 
-`ligero-server-loom` is Ligero's own HTTP server. It does not wrap the JDK's
+`ligero-server-pluma` is Ligero's own HTTP server. It does not wrap the JDK's
 server or Jetty: it reads and writes HTTP/1.1 and WebSockets directly on
 sockets, in a few small classes with no dependencies.
 
@@ -61,7 +61,7 @@ connections than dedicated threads the lead narrows; raise the budget if that
 is your workload:
 
 ```java
-app.engine(new LoomServerEngine(LoomServerEngine.Limits.defaults().withDedicatedThreads(1024)));
+app.engine(new PlumaServerEngine(PlumaServerEngine.Limits.defaults().withDedicatedThreads(1024)));
 ```
 
 **What it supports.** HTTP/1.1 with keep-alive and pipelining, **HTTP/2**,
@@ -84,7 +84,7 @@ LIGERO_TLS_KEY=/etc/letsencrypt/live/example.com/privkey.pem
 
 ```java
 Tls tls = Tls.fromPem(Path.of("fullchain.pem"), Path.of("privkey.pem"));   // or Tls.fromKeyStore(path, password)
-app.engine(new LoomServerEngine(LoomServerEngine.Limits.defaults(), tls));
+app.engine(new PlumaServerEngine(PlumaServerEngine.Limits.defaults(), tls));
 ```
 
 Only what is considered safe today is negotiated: TLS 1.3 and TLS 1.2, and
@@ -188,12 +188,12 @@ and logs see the real client.
 **What it does not do.** HTTP/3 (it runs over UDP and is normally provided by
 a CDN).
 
-The limits are configurable through `LoomServerEngine.Limits`, e.g.
+The limits are configurable through `PlumaServerEngine.Limits`, e.g.
 `Limits.defaults().withMaxConnectionsPerAddress(20_000).withWriteTimeout(Duration.ofSeconds(60))`.
 
 ## HTTP/2
 
-The **Loom engine** speaks HTTP/2 itself (see above). The JDK engine is
+The **Pluma engine** speaks HTTP/2 itself (see above). The JDK engine is
 HTTP/1.1 only, and the **Jetty engine** offers cleartext HTTP/2:
 it carries an HTTP/1.1 and an HTTP/2 cleartext (**h2c**) connection factory on
 the same port, so h2c-capable clients negotiate HTTP/2 (via upgrade or prior
@@ -222,11 +222,11 @@ has no WebSocket support. (Raw TCP `Socket`/`ServerSocket` exist, of course; a
 
 The deeper point: **the JDK engine doesn't implement HTTP at all** — it's a thin
 wrapper that delegates the protocol to `com.sun.net.httpserver`, so it inherits
-that class's limits. The **Loom engine** and **Jetty** don't use that class;
+that class's limits. The **Pluma engine** and **Jetty** don't use that class;
 they read raw bytes off sockets and implement the protocol themselves, which
 is why both can offer WebSockets.
 
-That is why the Loom engine exists: it implements HTTP/1.1, HTTP/2 (framing,
+That is why the Pluma engine exists: it implements HTTP/1.1, HTTP/2 (framing,
 multiplexing, HPACK, flow control) and WebSockets itself, with no dependency.
 
 ## Writing an engine

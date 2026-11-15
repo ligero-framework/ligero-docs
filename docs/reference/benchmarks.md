@@ -20,7 +20,7 @@ connections, requests per second:
 
 | Framework | GET list | GET by id | POST | Overall | Startup (ms) | Dist libs (MB) |
 |---|--:|--:|--:|--:|--:|--:|
-| **Ligero (Loom engine)** | **188 813** | **173 212** | **129 087** | **161 621** | **374** | **2.7** |
+| **Ligero (Pluma engine)** | **188 813** | **173 212** | **129 087** | **161 621** | **374** | **2.7** |
 | Javalin 6 (Jetty) | 59 451 | 60 681 | 50 025 | 56 511 | 654 | 8.3 |
 | Ligero (Jetty engine) | 44 794 | 44 613 | 35 569 | 41 424 | 685 | 5.4 |
 | Ligero (JDK engine) | 38 196 | 38 299 | 31 016 | 35 667 | 429 | 2.7 |
@@ -33,7 +33,7 @@ first HTTP 200.*
 
 - **Ligero's own engine leads by a wide margin** — about 2.9× Javalin and 6×
   Spring Boot — while starting fastest and shipping the smallest dependency
-  tree. [`ligero-server-loom`](../guides/engines.md#the-loom-engine)
+  tree. [`ligero-server-pluma`](../guides/engines.md#the-pluma-engine)
   implements HTTP/1.1 itself, with one thread per connection and no
   dispatcher in between.
 - **The engine is what matters.** The same Ligero application on the JDK's
@@ -42,14 +42,14 @@ first HTTP 200.*
 - **Typed controllers cost nothing.** They run at the same throughput as
   hand-written lambdas, because the routing code is generated at compile time.
 - **The lead depends on the machine.** On the GitHub-hosted runner that
-  checks every pull request the same benchmark measured the Loom engine at
+  checks every pull request the same benchmark measured the Pluma engine at
   1.4× Javalin and 2.6× Spring Boot — still first, by a smaller margin than on
   the development machine above.
-- **And on the workload.** The Loom engine serves its first 256
+- **And on the workload.** The Pluma engine serves its first 256
   concurrent connections on dedicated threads. With 1 000 busy connections it
   measured 57–110 thousand requests/s against Javalin's 73 thousand.
 
-**HTTP/2 and TLS.** Measured with `h2load` against the Loom engine on the
+**HTTP/2 and TLS.** Measured with `h2load` against the Pluma engine on the
 same machine (`GET /products`, requests/s):
 
 | | Plain | TLS 1.3 |
@@ -75,7 +75,7 @@ frameworks drops below a recorded floor.
 
 | If you want… | Pick | Why |
 |---|---|---|
-| **Best all-round** | **Ligero (Loom engine)** | highest throughput, fastest startup, smallest deps, WebSockets, plus DI/modules/devtools |
+| **Best all-round** | **Ligero (Pluma engine)** | highest throughput, fastest startup, smallest deps, WebSockets, plus DI/modules/devtools |
 | **Nothing but the JDK's own server** | **Ligero (JDK engine)** | the conservative default; still ahead of Spring Boot |
 | **HTTP/2** | **Ligero (Jetty engine)** | same app, one dependency swap via the [`ServerEngine` SPI](../guides/engines.md) |
 | **The biggest ecosystem & maturity** | **Spring Boot** | not what this benchmark measures — slowest to start and heaviest, but the ecosystem is unmatched |

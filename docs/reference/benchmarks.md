@@ -49,6 +49,16 @@ first HTTP 200.*
   concurrent connections on dedicated threads. With 1 000 busy connections it
   measured 57–110 thousand requests/s against Javalin's 73 thousand.
 
+**HTTP/2 and TLS.** Measured with `h2load` against the Loom engine on the
+same machine (`GET /products`, requests/s):
+
+| | Plain | TLS 1.3 |
+|---|--:|--:|
+| HTTP/1.1, 32 connections | 140 437 | 95 445 |
+| HTTP/2, 8 connections × 16 streams | 141 564 | 120 482 |
+
+Multiplexed HTTP/2 matches HTTP/1.1, and TLS costs roughly 15–30 %.
+
 :::note Earlier numbers
 Previous versions of this page showed about 13 000 requests/s for every fast
 framework. That figure was the load generator's limit, not the servers': the

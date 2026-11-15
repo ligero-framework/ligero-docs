@@ -91,7 +91,10 @@ Only what is considered safe today is negotiated: TLS 1.3 and TLS 1.2, and
 for 1.2 only forward-secret key exchange with authenticated encryption
 (ECDHE + AES-GCM / ChaCha20). The key must be an unencrypted PKCS#8 PEM
 (`-----BEGIN PRIVATE KEY-----`) or live in a PKCS#12 keystore
-(`LIGERO_TLS_KEYSTORE` / `LIGERO_TLS_KEYSTORE_PASSWORD`). Add HSTS with
+(`LIGERO_TLS_KEYSTORE` / `LIGERO_TLS_KEYSTORE_PASSWORD`). Renewed certificate
+files are picked up within seconds, without a restart; if a renewal cannot be
+loaded the previous certificate stays in force and a warning is logged. Add
+HSTS with
 [`SecurityHeadersMiddleware`](security.md).
 
 ### HTTP/2
@@ -183,7 +186,7 @@ and logs see the real client.
 :::
 
 **What it does not do.** HTTP/3 (it runs over UDP and is normally provided by
-a CDN), and certificate reloading without a restart.
+a CDN).
 
 The limits are configurable through `LoomServerEngine.Limits`, e.g.
 `Limits.defaults().withMaxConnectionsPerAddress(20_000).withWriteTimeout(Duration.ofSeconds(60))`.

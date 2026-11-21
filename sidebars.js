@@ -97,6 +97,7 @@ const sidebars = {
         'reference/modules',
         'reference/architecture',
         'reference/benchmarks',
+        'reference/spring-boot-4',
       ],
     },
   ],

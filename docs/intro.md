@@ -100,14 +100,17 @@ optimizes for the lean, explicit end of the spectrum.
 
 Same products CRUD app, measured identically (see [Benchmarks](reference/benchmarks)):
 
-| | Ligero (JDK engine) | Javalin | Spring Boot |
+| | Ligero (Pluma engine) | Javalin 6 | Spring Boot 4.2 |
 |---|--:|--:|--:|
 | Core dependencies | **0** (slf4j-api) | Jetty | dozens |
-| Programming model | handlers + middleware, explicit DI | handlers | annotations + DI |
+| Programming model | handlers or typed controllers, explicit DI | handlers | annotations + DI |
 | Virtual threads | **default** | optional | optional |
-| Cold start | **~0.43 s** | ~0.62 s | ~2 s |
-| Throughput | **~13k req/s** | ~11k | ~5.8k |
+| Cold start | **~0.37 s** | ~0.64 s | ~1.8 s |
+| Throughput | **~162k req/s** | ~55k | ~31k |
 | Dependency size | **3 MB** | 8 MB | 20 MB |
+
+For what Spring Boot 4 offers that Ligero does not, see
+[Ligero and Spring Boot 4](reference/spring-boot-4).
 
 Ready to dive in? Start with the [Quickstart](getting-started/quickstart), or
 follow the [Learning Path](learning-path) for a guided route from your first

@@ -187,6 +187,24 @@ For distribution there are two options:
   CLI. This is the recommended distribution path; the CLI does no reflection,
   so it builds native cleanly.
 
+## `ligero image` — container images
+
+Build an OCI image with [Cloud Native Buildpacks](https://buildpacks.io) — no
+Dockerfile to maintain, a patched JRE and OS layer on every rebuild, and a
+software bill of materials (SBOM) inside the image:
+
+```bash
+ligero image                                              # <project>:latest
+ligero image --name registry.example.com/shop/api --tag 1.4.0 --publish
+ligero image --sbom build/sbom                            # also write the SBOM files
+ligero image --dry-run                                    # print the pack command only
+```
+
+It needs the [`pack`](https://buildpacks.io/docs/for-platform-operators/how-to/integrate-ci/pack/)
+CLI and Docker; it uses the Paketo Java builder on Java 21 and starts the app
+with the generated start script. Without `pack`, the generated `Dockerfile`
+does the same job: `docker build -t my-api .`
+
 ## `ligero dev` — hot reload
 
 Run the app and restart it on every source change — a simple watch → rebuild →

@@ -5,10 +5,10 @@ sidebar_position: 4
 # Ligero and Spring Boot 4
 
 Spring Boot 4 (November 2025) and its follow-ups 4.1 (June 2026) and 4.2 are
-built on Spring Framework 7. This page lists what that line added, which of
-it Ligero already covers, and what Ligero does not have — so you can tell
-whether a missing piece matters for your application before you pick a
-framework. The performance side is in [Benchmarks](benchmarks.md).
+built on Spring Framework 7. This page lists what that line added and where
+Ligero stands on each point, so you can tell whether a missing piece matters
+for your application before you pick a framework. Most of the gaps listed in
+the first version of this page are covered by the release after 0.8.0. The performance side is in [Benchmarks](benchmarks.md).
 
 ## Performance at a glance
 
@@ -32,26 +32,26 @@ virtual threads adds another 4 %.
 |---|---|
 | **Typed controller methods** (`@GetMapping`, `@PathVariable`, `@RequestBody`) — long-standing | ✅ [Typed controllers](../guides/controllers.md), generated at compile time instead of resolved by reflection at startup |
 | **Resilience in the core**: `@Retryable`, `RetryTemplate` | ✅ [`ligero-resilience`](../guides/resilience.md): `Retry`, `Timeout`, `CircuitBreaker` |
-| **`@ConcurrencyLimit`** (cap concurrent calls to a method) | ❌ Not yet — the closest is per-client [rate limiting](../guides/middleware.md) |
-| **API versioning** (version from header, path, query or media type; routing by version; deprecation headers) | ❌ Not built in — today you encode the version in the path (`/v2/...`) by hand |
-| **Declarative HTTP clients** (`@HttpExchange` interfaces, `RestClient`, per-group configuration) | ❌ No HTTP client module — use `java.net.http.HttpClient` directly |
-| **SSRF protection for outgoing requests** (`InetAddressFilter`, 4.1) | ❌ Follows from the above: there is no Ligero client to protect |
-| **RFC 9457 Problem Details** error bodies (`application/problem+json`) | ⚠️ Errors are a uniform `{"status":…, "error":…}` JSON body ([error handling](../guides/error-handling.md)); a custom exception handler can emit Problem Details |
+| **`@ConcurrencyLimit`** (cap concurrent calls to a method) | ✅ [`ConcurrencyLimit`](../guides/resilience.md#concurrency-limit-bulkhead) for calls, `ConcurrencyLimitMiddleware` for requests (`503` + `Retry-After`) |
+| **API versioning** (version from header, path, query or media type; routing by version; deprecation headers) | ✅ [`ApiVersioning`](../guides/api-versioning.md): the same four sources, `Deprecation`/`Sunset`/`Link` headers, per-version handlers and `@ApiVersion` on typed controllers |
+| **Declarative HTTP clients** (`@HttpExchange` interfaces, `RestClient`, per-group configuration) | ✅ [`ligero-http-client`](../guides/http-client.md): `RestClient`, and `@ClientApi` interfaces implemented at compile time |
+| **SSRF protection for outgoing requests** (`InetAddressFilter`, 4.1) | ✅ [`AddressFilter.publicOnly()`](../guides/http-client.md#server-side-request-forgery-ssrf), checked on every redirect hop |
+| **RFC 9457 Problem Details** error bodies (`application/problem+json`) | ✅ [`app.problemDetails(true)`](../guides/error-handling.md#problem-details), `ProblemException`, and problems read back by the HTTP client |
 | **Null-safety annotations** on the whole API (JSpecify) | ❌ Not annotated |
-| **OpenTelemetry starter**: OTLP export of traces, metrics and logs; OTel semantic conventions (4.2) | ⚠️ [`ligero-otel`](../guides/observability.md) exports traces; metrics go through Micrometer (`ligero-metrics-micrometer`) |
+| **OpenTelemetry starter**: OTLP export of traces, metrics and logs; OTel semantic conventions (4.2) | ✅ [`ligero-otel-otlp`](../guides/observability.md#exporting-over-otlp-in-one-call): traces, semantic-convention metrics and request logs over OTLP, from `OTEL_*` variables |
 | **Virtual threads** (`spring.threads.virtual.enabled`) | ✅ Ligero serves requests on virtual threads by default; the Pluma engine adds dedicated platform threads for the first 256 connections |
 | **HTTP/2** (via Tomcat, Jetty or Netty) | ✅ The [Pluma engine](../guides/engines.md) implements HTTP/2 itself, with rapid-reset and flood protection |
-| **Forwarded headers**, unified under `server.request.header.forwarded.*` (4.2) | ⚠️ [`TrustedProxyMiddleware`](../guides/security.md) reads `X-Forwarded-For` from listed proxies only; the standard `Forwarded` header (RFC 7239) is not read |
+| **Forwarded headers**, unified under `server.request.header.forwarded.*` (4.2) | ✅ [`TrustedProxyMiddleware`](../guides/security.md#behind-a-reverse-proxy): `X-Forwarded-For` or RFC 7239 `Forwarded`, from listed proxies only |
 | **Multipart limits by default** (WebFlux, 4.2) | ✅ Size and part-count limits on by default |
 | **`RestTestClient`** for tests, against a mock or a live server | ✅ [`ligero-test`](../guides/testing.md) drives the real app end to end; handlers can also be tested without a server |
 | **Programmatic bean registration** (`BeanRegistrar`) | ✅ Registration is programmatic by design ([dependency injection](../guides/dependency-injection.md)) |
 | **Native image / AOT** | ✅ [Native-ready](../guides/native-image.md) by construction (no reflection in the core) |
 | **JWT/OAuth2 resource server**, authorities from claims | ✅ [JWT](../guides/security.md), [asymmetric keys and JWKS](../guides/auth-asymmetric.md) — fetching the JWKS document is up to you |
-| **gRPC** servers and clients (4.1) | ❌ Not supported |
-| **Messaging**: AMQP 1.0 (4.2), RabbitMQ, Kafka, JMS (`JmsClient`) | ❌ Not supported — Ligero has in-process [events](../guides/events.md) and Redis-backed stores only |
-| **GraphQL** | ❌ Not supported |
-| **Internationalisation** (`MessageSource`) | ❌ Not built in |
-| **Container images** with Buildpacks, SBOM | ❌ No build tooling of its own — a plain `Dockerfile` (the CLI generates one) |
+| **gRPC** servers and clients (4.1) | ✅ [`ligero-grpc`](../guides/grpc.md): services next to the HTTP server, virtual threads, health checks (clients: grpc-java's own channels) |
+| **Messaging**: AMQP 1.0 (4.2), RabbitMQ, Kafka, JMS (`JmsClient`) | ✅ [`ligero-kafka`, `ligero-jms`, `ligero-amqp`](../guides/messaging.md): JSON payloads, at-least-once delivery, dead-lettering |
+| **GraphQL** | ✅ [`ligero-graphql`](../guides/graphql.md) with depth, complexity and size limits |
+| **Internationalisation** (`MessageSource`) | ✅ [`Messages` and `LocaleMiddleware`](../guides/i18n.md) |
+| **Container images** with Buildpacks, SBOM | ✅ [`ligero image`](../getting-started/cli.md#ligero-image--container-images) in the CLI (Paketo buildpacks, SBOM export) |
 
 ✅ covered · ⚠️ partly covered · ❌ missing
 
@@ -74,13 +74,13 @@ virtual threads adds another 4 %.
 
 ## When to pick which
 
-- **Pick Ligero** for HTTP APIs and services where throughput, startup time,
-  memory and a small, readable stack matter: microservices, serverless and
-  scale-to-zero, edge deployments, MCP servers.
-- **Pick Spring Boot** when you need its integrations — messaging brokers,
-  gRPC, GraphQL, batch, the wider Spring Data and Spring Security ecosystem —
-  or a team that already knows it. Those are the gaps in the table above,
-  and none of them is about speed.
+- **Pick Ligero** for HTTP, GraphQL and gRPC services where throughput,
+  startup time, memory and a small, readable stack matter: microservices,
+  serverless and scale-to-zero, edge deployments, event consumers, MCP servers.
+- **Pick Spring Boot** when you need its long tail of integrations — Spring
+  Batch, Spring Data for many stores, Spring Security's OAuth2 server and SAML,
+  Spring Cloud — or a team that already knows it.
 
-The missing pieces most likely to matter for a typical HTTP API are API
-versioning, a declarative HTTP client and Problem Details errors.
+What is still missing on the Ligero side: null-safety annotations (JSpecify)
+on the public API, a GraphQL client, and Spring's breadth of data-store
+integrations.

@@ -24,6 +24,7 @@ const sidebars = {
         'guides/context',
         'guides/middleware',
         'guides/error-handling',
+        'guides/api-versioning',
       ],
     },
     {
@@ -65,6 +66,9 @@ const sidebars = {
         'guides/templates',
         'guides/realtime',
         'guides/openapi',
+        'guides/graphql',
+        'guides/grpc',
+        'guides/i18n',
       ],
     },
     {
@@ -86,6 +90,8 @@ const sidebars = {
         'guides/scheduler',
         'guides/cache',
         'guides/resilience',
+        'guides/http-client',
+        'guides/messaging',
         'guides/jdbc-pooling',
         'guides/native-image',
       ],

@@ -191,6 +191,22 @@ app.use(TrustedProxyMiddleware.of("10.0.0.0/8"));   // first, before anything th
 app.use(RateLimitMiddleware.of(100, 100));           // now limits real clients
 ```
 
+Proxies that send the standard `Forwarded` header (RFC 7239) instead:
+
+```java
+app.use(TrustedProxyMiddleware.of("10.0.0.0/8").withForwardedHeader());
+```
+
+In that mode the original scheme and host are available too
+(`TrustedProxyMiddleware.PROTO_ATTRIBUTE`, `HOST_ATTRIBUTE`). Read the header
+your proxy actually writes: the other one arrives untouched from the client.
+
+## Outgoing requests (SSRF)
+
+When the application fetches URLs that users supply, build that client with
+`AddressFilter.publicOnly()` so the URL cannot point at internal services or
+the cloud metadata endpoint — see [HTTP client](http-client.md#server-side-request-forgery-ssrf).
+
 ## Production checklist
 
 - Serve over TLS; enable HSTS and a Content-Security-Policy (above).

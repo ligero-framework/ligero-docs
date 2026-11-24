@@ -36,7 +36,7 @@ Add the dependency (development only) and instrument your beans:
 
 ```groovy
 // build.gradle — never ship this to production
-implementation 'com.ligeroframework:ligero-devtools:0.6.0'
+implementation 'com.ligeroframework:ligero-devtools:0.8.0'
 ```
 
 ```java

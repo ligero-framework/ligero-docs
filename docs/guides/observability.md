@@ -50,7 +50,7 @@ Tracing is vendor-neutral by design: the core defines a `Tracer` SPI and a
 through it via the OTel SDK/agent exporters, or can implement the SPI directly.
 
 ```groovy
-implementation 'com.ligeroframework:ligero-otel:0.5.0'
+implementation 'com.ligeroframework:ligero-otel:0.8.0'
 ```
 
 ```java

@@ -60,6 +60,10 @@ app.use(StaticFilesMiddleware.classpath("/assets", "web"));
 app.use("/api", JwtAuthMiddleware.of(jwt));
 ```
 
+`CorsMiddleware.permissive()` allows any origin without credentials. Combining
+`allowCredentials(true)` with the wildcard origin is refused at startup — see
+[Security → CORS](security.md#cors).
+
 ## Static files in detail
 
 ```java
@@ -67,6 +71,7 @@ app.use(StaticFilesMiddleware.external("/static", Path.of("public")));
 app.use(StaticFilesMiddleware.classpath("/assets", "web").cacheControl("public, max-age=86400"));
 ```
 
-- Path traversal (`..`, encoded variants, backslashes) is rejected — covered by tests.
+- Path traversal (`..`, encoded variants, backslashes, symlinks leaving the
+  directory) is rejected — covered by tests.
 - External files get an `ETag`; `If-None-Match` yields `304`.
 - Misses fall through to your routes and 404 handling.

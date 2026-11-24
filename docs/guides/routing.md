@@ -28,6 +28,14 @@ app.get("/users/{id}/posts/{postId}", ctx -> {
 });
 ```
 
+Values are percent-decoded for you: `GET /users/John%20Doe` gives
+`ctx.pathParam("id") == "John Doe"`, and broken encoding answers `400`.
+
+:::tip
+Prefer endpoints declared as methods with typed parameters? See
+[Typed controllers](controllers.md) — `@Get("/{id}") User get(@PathParam long id)`.
+:::
+
 ## Wildcards
 
 A trailing `*name` captures the remainder of the path:

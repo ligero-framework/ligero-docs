@@ -49,8 +49,50 @@ app.websocket("/chat", new WsHandler() {
 });
 ```
 
+The Pluma engine (`ligero-server-pluma`) supports WebSockets too, with no
+dependencies — see [Server Engines](engines.md#the-pluma-engine).
+
 HTTP routes and WebSockets share the same port; non-upgrade requests flow
 through the normal pipeline untouched.
+
+### Binary messages and compression
+
+Override `onBinary` to accept binary messages and answer with
+`session.send(byte[])`; a handler that does not override it refuses binary
+messages with close code 1003. On the Pluma engine, messages are compressed
+with `permessage-deflate` whenever the client offers it (browsers do) —
+nothing to configure — and a compressed message can never inflate beyond the
+message size limit.
+
+```java
+app.websocket("/upload", new WsHandler() {
+    @Override public void onBinary(WsSession session, byte[] message) {
+        session.send(checksum(message));
+    }
+});
+```
+
+### Origin checks
+
+A browser will open a WebSocket to your app from *any* website, cookies
+included, and CORS does not apply. So by default a handshake is accepted only
+when it has no `Origin` header (a non-browser client) or the origin is the
+app's own host; everything else gets `403`. Trust additional origins by
+overriding `acceptOrigin`:
+
+```java
+app.websocket("/chat", new WsHandler() {
+    @Override public boolean acceptOrigin(String origin, String host) {
+        return "https://app.example.com".equals(origin)
+            || WsHandler.super.acceptOrigin(origin, host);
+    }
+    // ...
+});
+```
+
+The middleware pipeline does not run for WebSocket upgrades, so authenticate
+inside `onConnect` (for example with a short-lived token the page obtained
+over HTTP) and close the session if it fails.
 
 ### Which one do I need?
 

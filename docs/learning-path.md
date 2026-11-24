@@ -43,6 +43,7 @@ Your goal: handle any request and shape any response — the 80% you'll use dail
 
 Your goal: move wiring out of `main()` and keep a growing codebase navigable.
 
+- **[Typed controllers](guides/controllers)** — endpoints as methods with typed parameters and return values, checked at compile time.
 - **[Dependency injection](guides/dependency-injection)** — explicit, compile-checked wiring (no reflection); optional compile-time processor.
 - **[Architecture & modules](guides/architecture)** — feature slices (`LigeroModule`) that own their beans and routes.
 - **[Devtools](guides/devtools)** — the `/ligero/dev` dashboard: live bean graph + per-request traces.

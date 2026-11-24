@@ -57,6 +57,36 @@ McpServer.create("calc", "1.0.0")
 A tool handler that **throws** is reported to the client as an MCP error result
 (`isError: true`) — the connection stays healthy.
 
+## Securing the endpoint
+
+An MCP server usually listens on a developer's machine, where any web page
+open in the browser can reach `http://localhost:<port>`. To stop a malicious
+page from calling your tools (DNS rebinding), the endpoint validates the
+`Origin` header, as the MCP specification requires:
+
+- no `Origin` header (native MCP clients, `curl`) — accepted;
+- a loopback origin (`localhost`, `127.0.0.1`, `[::1]`) — accepted;
+- any other origin — `403`, unless you allow it:
+
+```java
+McpServer.create("calc", "1.0.0")
+    .allowedOrigins("https://app.example.com")
+    .tool(...);
+```
+
+Origin checks are not authentication. If the server is reachable from other
+machines, put it behind auth like any other route:
+
+```java
+app.use("/mcp", JwtAuthMiddleware.of(jwt));
+app.use(mcp.http("/mcp"));
+```
+
+Unexpected failures are logged server-side and reported to the client as a
+generic `Internal error` — exception messages are not sent over the wire.
+(A tool handler's own exception message *is* returned, as the tool's error
+result, so keep secrets out of those.)
+
 ## What's implemented
 
 - The `initialize` handshake (protocol version, `serverInfo`, `tools` capability).

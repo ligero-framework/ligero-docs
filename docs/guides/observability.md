@@ -67,7 +67,60 @@ Per request you get a `SERVER` span that:
 - is named by the matched route pattern (`GET /users/{id}` — bounded cardinality),
 - carries `http.request.method`, `url.path`, `http.route`, `http.response.status_code`,
 - records exceptions and marks the span as `ERROR` on failures,
-- exposes its trace id as the `traceId` context attribute for log correlation.
+- exposes its trace id as the `traceId` context attribute for log correlation,
+- is current for the whole request, so log records and instrumented outgoing
+  calls join the trace.
+
+## OpenTelemetry metrics and logs
+
+`ligero-otel` also records metrics and access logs through OpenTelemetry:
+
+```java
+app.use(new TracingMiddleware(new OtelTracer(otel)))
+   .use(new MetricsMiddleware(new OtelMetricsCollector(otel)))   // http.server.request.duration
+   .use(new OtelRequestLogs(otel));                              // one log record per request
+```
+
+The histogram follows the HTTP semantic conventions (`http.request.method`,
+`http.route`, `http.response.status_code`, `error.type`, recommended
+buckets). Log records carry the method, route, path, status and duration — not
+the query string, headers or body — at `INFO`, `WARN` (4xx) or `ERROR` (5xx),
+joined to the request's trace. Requests that matched no route are reported
+with the route `UNMATCHED`, never their raw path, so random URLs cannot
+create unbounded metric series.
+
+## Exporting over OTLP in one call
+
+`ligero-otel-otlp` builds the OpenTelemetry SDK and sends all three signals to
+any OTLP backend — the OpenTelemetry Collector, Grafana, Honeycomb, Datadog,
+New Relic, ...:
+
+```groovy
+implementation 'com.ligeroframework:ligero-otel-otlp:<version>'
+```
+
+```java
+Ligero app = Ligero.create();
+Otlp.instrument(app);      // first, so every request is observed
+```
+
+It is configured with the standard environment variables:
+
+```bash
+OTEL_SERVICE_NAME=shop
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otel-collector.internal:4318
+OTEL_EXPORTER_OTLP_HEADERS=x-api-key=...
+OTEL_TRACES_SAMPLER=parentbased_traceidratio
+OTEL_TRACES_SAMPLER_ARG=0.1
+```
+
+Data goes out as OTLP/HTTP (`http/protobuf`, port 4318) through the JDK's own
+HTTP client, and what is buffered is flushed when the app stops. The gRPC
+transport is not bundled.
+
+:::note Availability
+Metrics, request logs and `ligero-otel-otlp` ship in the release after 0.8.0.
+:::
 
 Without any tracing backend, `RequestIdMiddleware` alone still parses
 `traceparent` and exposes `traceId` for logs.

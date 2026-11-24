@@ -7,7 +7,7 @@ sidebar_position: 6
 Everything here comes from `ligero-auth` plus two core middlewares. Add:
 
 ```groovy
-implementation 'com.ligeroframework:ligero-auth:0.5.0'
+implementation 'com.ligeroframework:ligero-auth:0.8.0'
 ```
 
 ## JWT (HS256)

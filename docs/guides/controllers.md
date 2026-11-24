@@ -11,11 +11,6 @@ controllers** give the same routes a structure the compiler understands — an
 endpoint is a method, its inputs are typed parameters and its output is the
 return type.
 
-:::info Availability
-Typed controllers need a Ligero release that includes the `com.ligero.web`
-package (the release after 0.7.0) and the matching `ligero-processor`.
-:::
-
 ## The same endpoint, both ways
 
 ```java title="Lambda style"
@@ -65,8 +60,8 @@ Add the annotation processor and install the generated modules:
 
 ```groovy
 dependencies {
-    implementation      'com.ligeroframework:ligero-core:0.5.0'
-    annotationProcessor 'com.ligeroframework:ligero-processor:0.5.0'
+    implementation      'com.ligeroframework:ligero-core:0.8.0'
+    annotationProcessor 'com.ligeroframework:ligero-processor:0.8.0'
 }
 ```
 

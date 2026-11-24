@@ -30,7 +30,7 @@ config and profiles.
 
 ```groovy
 // build.gradle
-implementation 'com.ligeroframework:ligero-config-yaml:0.5.0'
+implementation 'com.ligeroframework:ligero-config-yaml:0.8.0'
 ```
 
 Create `src/main/resources/ligero.yml`:

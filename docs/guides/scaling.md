@@ -13,7 +13,7 @@ Both are just SPI implementations — the middleware doesn't change, you swap th
 store.
 
 ```groovy
-implementation 'com.ligeroframework:ligero-redis:0.5.0'
+implementation 'com.ligeroframework:ligero-redis:0.8.0'
 ```
 
 ```java

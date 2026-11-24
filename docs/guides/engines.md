@@ -10,13 +10,13 @@ swap, zero code changes:
 
 ```groovy
 // default: JDK built-in server on virtual threads
-runtimeOnly 'com.ligeroframework:ligero-server-jdk:0.5.0'
+runtimeOnly 'com.ligeroframework:ligero-server-jdk:0.8.0'
 
 // or: Ligero's own server — fastest, WebSockets, still zero dependencies
-runtimeOnly 'com.ligeroframework:ligero-server-pluma:0.5.0'
+runtimeOnly 'com.ligeroframework:ligero-server-pluma:0.8.0'
 
 // or: Jetty 12 (WebSockets and HTTP/2)
-runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.5.0'
+runtimeOnly 'com.ligeroframework:ligero-server-jetty:0.8.0'
 ```
 
 | | `ligero-server-jdk` | `ligero-server-pluma` | `ligero-server-jetty` |
@@ -36,10 +36,6 @@ All engines give the same behavior for routing, errors, body limits,
 redirects and headers.
 
 ## The Pluma engine
-
-:::info Availability
-`ligero-server-pluma` ships in the release after 0.7.0.
-:::
 
 `ligero-server-pluma` is Ligero's own HTTP server. It does not wrap the JDK's
 server or Jetty: it reads and writes HTTP/1.1 and WebSockets directly on
@@ -135,7 +131,7 @@ dependency; it is preferred whenever the client accepts it and falls back to
 gzip otherwise:
 
 ```groovy
-runtimeOnly 'com.ligeroframework:ligero-compress-brotli:0.5.0'
+runtimeOnly 'com.ligeroframework:ligero-compress-brotli:0.8.0'
 ```
 
 :::caution
